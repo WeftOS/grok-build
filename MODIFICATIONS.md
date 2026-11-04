@@ -28,7 +28,7 @@ Add each path in backticks on a list line, in the form
 - `Cargo.lock` (modified): the matching source URLs for those two git dependencies; no version or revision changed.
 
 - `crates/codegen/xai-grok-agent/Cargo.toml` (modified): R17: new feature `vendor-compat` forwarding to `xai-grok-config/vendor-compat` (off by default).
-- `crates/codegen/xai-grok-agent/src/discovery.rs` (modified): R17: `.claude/agents` (project and user) not scanned unless `VENDOR_COMPAT`; tests gated and added.
+- `crates/codegen/xai-grok-agent/src/discovery.rs` (modified): R17: `.claude/agents` (project and user) and the legacy `~/.grok/agents` (the installed Grok CLI home, when `GROK_HOME` points elsewhere) not scanned unless `VENDOR_COMPAT`; tests gated and added.
 - `crates/codegen/xai-grok-agent/src/plugins/discovery.rs` (modified): R17b: `~/.claude/plugins/installed_plugins.json` (step 5c) not read unless `VENDOR_COMPAT`. R17: `~/.claude/plugins` and `.claude/plugins` not scanned unless `VENDOR_COMPAT`; tests gated and added.
 - `crates/codegen/xai-grok-agent/src/plugins/marketplace.rs` (modified): R17: `.claude/settings.json` and `known_marketplaces.json` marketplaces resolve to nothing unless `VENDOR_COMPAT`.
 - `crates/codegen/xai-grok-agent/src/prompt/agents_md.rs` (modified): R17: tests that build vendor-enabled configs use `CompatConfig::all_on()` instead of `default()` (now off); tests asserting vendor discovery gated on feature `vendor-compat`.

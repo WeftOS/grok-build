@@ -179,7 +179,10 @@ pub(crate) fn user_agent_dirs(
     // Legacy literal ~/.grok, included only when it differs from grok_home
     // (i.e. GROK_HOME points elsewhere) so agents left in the old location are
     // still discovered and stay consistent with scope_from_path classification.
+    // Tapestry: the legacy ~/.grok belongs to the installed Grok CLI, not this
+    // config home, so it is read only with `vendor-compat` (R17).
     let legacy_grok = home
+        .filter(|_| xai_grok_config::compat::VENDOR_COMPAT)
         .map(|h| h.join(".grok"))
         .filter(|legacy| grok_home != Some(legacy.as_path()));
 
@@ -765,7 +768,8 @@ mod tests {
             .map(|(p, _)| p)
             .collect();
         assert!(paths.contains(&grok.join("agents")));
-        assert!(paths.contains(&home.join(".grok").join("agents")));
+        assert!(paths.contains(&grok.join("bundled").join("agents")));
+        assert!(paths.iter().all(|p| !p.starts_with(home.join(".grok"))));
         assert!(paths.iter().all(|p| !p.to_string_lossy().contains(".claude")));
         assert_eq!(PROJECT_AGENT_SUBDIRS, &[".grok/agents"]);
     }
