@@ -23,3 +23,4 @@ Add each path in backticks on a list line, in the form
 - `scripts/check-modifications.sh` (added): checks that this file lists every change.
 - `docs/tapestry/notices-inventory.md` (added): inventory of licence and notice files.
 - `docs/tapestry/mpl-files.md` (added): inventory of MPL-2.0 files and dependencies.
+- `rust-toolchain.toml` (modified): channel 1.94.0 to 1.95, to match WeftOS. `cargo check -p xai-grok-pager-bin` passes unchanged on 1.95 (x86_64 Linux and aarch64 macOS).
