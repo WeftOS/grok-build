@@ -378,7 +378,8 @@ pub fn discover_plugins(
     // 5c. Installed plugins (~/.claude/plugins/installed_plugins.json).
     // Entries carry explicit installPath dirs (nested under cache/<marketplace>/<plugin>/<version>/)
     // The plugin name is extracted from the JSON key ("name@marketplace").
-    if let Some(home) = xai_dirs::home_dir() {
+    // Tapestry: ~/.claude is not read unless `vendor-compat` is built in
+    if let Some(home) = xai_dirs::home_dir().filter(|_| xai_grok_config::compat::VENDOR_COMPAT) {
         let installed_json = home
             .join(".claude")
             .join("plugins")

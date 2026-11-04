@@ -192,7 +192,10 @@ fn collect_skill_config_dirs_from_sources(
     // `.agents` is always added, while `.claude`/`.cursor` are gated by the skills compat cells
     try_add(grok_home);
     if let Some(home) = xai_dirs::home_dir() {
-        try_add(home.join(".agents"));
+        // Tapestry: `~/.agents` is shared with other harnesses, only read with `vendor-compat`
+        if xai_grok_config::compat::VENDOR_COMPAT {
+            try_add(home.join(".agents"));
+        }
         if compat.claude.skills {
             try_add(home.join(".claude"));
         }

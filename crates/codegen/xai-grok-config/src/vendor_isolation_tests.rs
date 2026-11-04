@@ -124,7 +124,8 @@ fn no_env_toml_or_remote_setting_turns_a_cell_on() {
 fn resolved_cells_expose_no_vendor_directory_or_instruction_name() {
     let (toml, env, remote) = every_source_on();
     let resolved = resolve_compat_config(&toml, &env, Some(&remote));
-    assert_eq!(resolved.skill_config_dirs(), vec![".grok", ".agents"]);
+    assert_eq!(resolved.skill_config_dirs(), vec![".grok"]);
+    assert!(!CompatConfig::all_on().skill_config_dirs().contains(&".agents"));
     assert_eq!(resolved.rules_dirs(), vec![".grok/rules"]);
     assert!(resolved.agents_home_dirs().is_empty());
     let names = resolved.agent_filenames();

@@ -269,7 +269,11 @@ fn discover_auto_sources(cwd: &str, skills: &[SkillInfo]) -> Vec<(String, usize)
     // Import writes those dirs to [paths] extra_skill_dirs for the source UI.
     // list_skills_with_plugins still does not read extra_skill_dirs.
     let imported = crate::claude_import::is_claude_import_marked();
-    let local_dir_names: &[&str] = if imported {
+    // Tapestry: `.agents` and `.claude` are foreign-harness dirs, only listed with `vendor-compat`
+    let vendor = xai_grok_config::compat::VENDOR_COMPAT;
+    let local_dir_names: &[&str] = if !vendor {
+        &[".grok"]
+    } else if imported {
         &[".grok", ".agents"]
     } else {
         &[".grok", ".agents", ".claude"]
@@ -309,10 +313,12 @@ fn discover_auto_sources(cwd: &str, skills: &[SkillInfo]) -> Vec<(String, usize)
     }
 
     if let Some(home_path) = xai_dirs::home_dir() {
-        for subdir in &subdirs {
-            try_add_source(home_path.join(".agents").join(subdir), None);
+        if vendor {
+            for subdir in &subdirs {
+                try_add_source(home_path.join(".agents").join(subdir), None);
+            }
         }
-        if !imported {
+        if vendor && !imported {
             for subdir in &subdirs {
                 try_add_source(home_path.join(".claude").join(subdir), None);
             }

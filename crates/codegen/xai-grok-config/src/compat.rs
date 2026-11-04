@@ -434,7 +434,11 @@ impl CompatConfig {
     /// Config directories that may contain `skills/` subdirectories, in priority order. `.grok` and `.agents` are always included; `.claude` and
     /// `.cursor` are gated on their respective `skills` cell.
     pub fn skill_config_dirs(&self) -> Vec<&'static str> {
-        let mut dirs = vec![".grok", ".agents"];
+        let mut dirs = vec![".grok"];
+        // Tapestry: `.agents` is a cross-vendor shared dir, only read with `vendor-compat`
+        if VENDOR_COMPAT {
+            dirs.push(".agents");
+        }
         if self.claude.skills {
             dirs.push(".claude");
         }

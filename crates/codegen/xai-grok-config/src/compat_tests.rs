@@ -446,6 +446,7 @@ fn registry_and_defaults_cover_every_cell() {
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn skill_config_dirs_all_on_lists_every_vendor() {
     assert_eq!(
@@ -454,6 +455,7 @@ fn skill_config_dirs_all_on_lists_every_vendor() {
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn skill_config_dirs_gates_each_vendor() {
     let mut c = CompatConfig::all_on();

@@ -16,6 +16,8 @@ pub mod repo;
 pub mod system_reminder;
 pub mod timing;
 pub mod tool_list;
+#[cfg(test)]
+mod vendor_isolation_tests;
 
 pub use agent::Agent;
 pub use builder::AgentBuilder;

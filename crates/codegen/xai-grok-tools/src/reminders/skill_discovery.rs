@@ -12,7 +12,11 @@ use std::path::{Path, PathBuf};
 /// Directories that contain skill definitions (`.grok/skills/`, `.agents/skills/`,
 /// `.claude/skills/`, `.cursor/skills/`). Shared between startup skill discovery
 /// and runtime `SkillDiscoveryReminder`.
+/// Tapestry: only `.grok` unless `vendor-compat` is built in.
+#[cfg(feature = "vendor-compat")]
 pub const SKILL_CONFIG_DIRS: &[&str] = &[".grok", ".agents", ".claude", ".cursor"];
+#[cfg(not(feature = "vendor-compat"))]
+pub const SKILL_CONFIG_DIRS: &[&str] = &[".grok"];
 
 use crate::implementations::skills::discovery;
 use crate::implementations::skills::types::SkillScope;
