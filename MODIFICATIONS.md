@@ -24,3 +24,5 @@ Add each path in backticks on a list line, in the form
 - `docs/tapestry/notices-inventory.md` (added): inventory of licence and notice files.
 - `docs/tapestry/mpl-files.md` (added): inventory of MPL-2.0 files and dependencies.
 - `rust-toolchain.toml` (modified): channel 1.94.0 to 1.95, to match WeftOS. `cargo check -p xai-grok-pager-bin` passes unchanged on 1.95 (x86_64 Linux and aarch64 macOS).
+- `Cargo.toml` (modified): the two pinned git dependencies now come from WeftOS mirrors at the same revisions: async-openai from `WeftOS/async-openai` (was `our-forks/async-openai`) and nucleo from `WeftOS/nucleo` (was `helix-editor/nucleo`).
+- `Cargo.lock` (modified): the matching source URLs for those two git dependencies; no version or revision changed.
