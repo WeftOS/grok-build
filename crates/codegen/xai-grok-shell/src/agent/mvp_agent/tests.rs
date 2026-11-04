@@ -2296,7 +2296,7 @@ async fn skills_list_refreshes_session_skill_baseline() {
         &agent,
         &req,
         None,
-        xai_grok_agent::prompt::skills::CompatConfig::default(),
+        xai_grok_agent::prompt::skills::CompatConfig::all_on(),
     )
     .await
     .expect("skills/list succeeds");

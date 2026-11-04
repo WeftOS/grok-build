@@ -130,6 +130,7 @@ fn mcp_json_expands_an_unset_variable_to_its_default() {
     assert_eq!("https://fallback.example.com/mcp", url);
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn nearest_mcp_json_wins_a_shared_name() {
     let root = tempfile::tempdir().unwrap();

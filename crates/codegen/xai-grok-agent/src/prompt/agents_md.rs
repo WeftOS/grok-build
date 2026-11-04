@@ -446,7 +446,7 @@ mod tests {
         let tmp = tempfile::tempdir().unwrap();
         fs::write(tmp.path().join("AGENTS.md"), "# Instructions").unwrap();
 
-        let files = find_agent_files(tmp.path(), &CompatConfig::default().agent_filenames());
+        let files = find_agent_files(tmp.path(), &CompatConfig::all_on().agent_filenames());
         // On case-insensitive filesystems (macOS), both "Agents.md" and "AGENTS.md" resolve to the same file, so we may get more than 1 result
         assert!(!files.is_empty());
         assert!(
@@ -460,7 +460,7 @@ mod tests {
     #[test]
     fn find_agent_files_finds_all_variants() {
         let tmp = tempfile::tempdir().unwrap();
-        let filenames = CompatConfig::default().agent_filenames();
+        let filenames = CompatConfig::all_on().agent_filenames();
         for name in &filenames {
             let path = tmp.path().join(name);
             if let Some(parent) = path.parent() {
@@ -476,7 +476,7 @@ mod tests {
     #[test]
     fn find_agent_files_empty_dir() {
         let tmp = tempfile::tempdir().unwrap();
-        let files = find_agent_files(tmp.path(), &CompatConfig::default().agent_filenames());
+        let files = find_agent_files(tmp.path(), &CompatConfig::all_on().agent_filenames());
         assert!(files.is_empty());
     }
 
@@ -484,7 +484,7 @@ mod tests {
     fn find_agent_files_nonexistent_dir() {
         let files = find_agent_files(
             Path::new("/nonexistent/dir"),
-            &CompatConfig::default().agent_filenames(),
+            &CompatConfig::all_on().agent_filenames(),
         );
         assert!(files.is_empty());
     }
@@ -496,7 +496,7 @@ mod tests {
         fs::create_dir_all(&claude_dir).unwrap();
         fs::write(claude_dir.join("CLAUDE.md"), "# Project instructions").unwrap();
 
-        let files = find_agent_files(tmp.path(), &CompatConfig::default().agent_filenames());
+        let files = find_agent_files(tmp.path(), &CompatConfig::all_on().agent_filenames());
         assert!(
             files
                 .iter()
@@ -513,7 +513,7 @@ mod tests {
         fs::write(rules_dir.join("style.md"), "# Style rules").unwrap();
         fs::write(rules_dir.join("safety.md"), "# Safety rules").unwrap();
 
-        let rules_dirs: Vec<PathBuf> = CompatConfig::default()
+        let rules_dirs: Vec<PathBuf> = CompatConfig::all_on()
             .rules_dirs()
             .iter()
             .map(|sub| tmp.path().join(sub))
@@ -600,7 +600,7 @@ mod tests {
         let configs = read_agents_config_with_options(
             repo_root.to_str().unwrap(),
             Some(&user_dir),
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             &PathsConfig::default(),
             /*project_trusted*/ true,
         )
@@ -629,7 +629,7 @@ mod tests {
         let configs = read_agents_config_with_options(
             user_dir.to_str().unwrap(),
             Some(&user_dir),
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             &PathsConfig::default(),
             /*project_trusted*/ true,
         )
@@ -661,7 +661,7 @@ mod tests {
         let configs = read_agents_config_with_options(
             repo_root.to_str().unwrap(),
             None,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             &PathsConfig::default(),
             /*project_trusted*/ true,
         )
@@ -687,7 +687,7 @@ mod tests {
         let configs = read_agents_config_with_options(
             dir.to_str().unwrap(),
             None,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             &PathsConfig::default(),
             /*project_trusted*/ true,
         )
@@ -733,7 +733,7 @@ mod tests {
         let configs = read_agents_config_with_roots(
             repo.to_str().unwrap(),
             None,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             &PathsConfig::default(),
             grok_home,
             Some(home),
@@ -779,7 +779,7 @@ mod tests {
             fs::write(vendor_home.join("rules/rule.md"), format!("{vendor}-rule")).unwrap();
         }
 
-        let mut rules_only = CompatConfig::default();
+        let mut rules_only = CompatConfig::all_on();
         rules_only.claude.agents = false;
         rules_only.cursor.agents = false;
         let configs = read_agents_config_with_roots(
@@ -805,7 +805,7 @@ mod tests {
             );
         }
 
-        let mut agents_only = CompatConfig::default();
+        let mut agents_only = CompatConfig::all_on();
         agents_only.claude.rules = false;
         agents_only.cursor.rules = false;
         let configs = read_agents_config_with_roots(
@@ -848,7 +848,7 @@ mod tests {
         let configs = read_agents_config_with_roots(
             nested.to_str().unwrap(),
             None,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             &PathsConfig::default(),
             nested.clone(),
             None,
@@ -886,7 +886,7 @@ mod tests {
         let configs = read_agents_config_with_roots(
             repo.to_str().unwrap(),
             None,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             &PathsConfig::default(),
             repo.clone(),
             None,
@@ -920,7 +920,7 @@ mod tests {
         fs::write(repo.join("AGENTS.md"), "project-named").unwrap();
         fs::write(repo.join(".claude/rules/project.md"), "project-rule").unwrap();
 
-        let mut compat = CompatConfig::default();
+        let mut compat = CompatConfig::all_on();
         compat.claude.agents = false;
         let configs = read_agents_config_with_roots(
             repo.to_str().unwrap(),
@@ -958,7 +958,7 @@ mod tests {
         let configs = read_agents_config_with_roots(
             repo.to_str().unwrap(),
             None,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             &PathsConfig::default(),
             repo.clone(),
             None,
@@ -1019,7 +1019,7 @@ mod tests {
         let configs = read_agents_config_with_roots(
             repo.to_str().unwrap(),
             None,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             &paths,
             grok_home,
             Some(home),
@@ -1064,7 +1064,7 @@ mod tests {
         let configs = read_agents_config_with_roots(
             repo.to_str().unwrap(),
             None,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             &paths_config([&extra]),
             grok_home,
             None,
@@ -1095,7 +1095,7 @@ mod tests {
         let configs = read_agents_config_with_roots(
             repo.to_str().unwrap(),
             None,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             &paths_config([&shared]),
             grok_home.clone(),
             None,
@@ -1128,7 +1128,7 @@ mod tests {
         let configs = read_agents_config_with_roots(
             cwd.to_str().unwrap(),
             None,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             &paths_config([&home.join(".claude/rules")]),
             grok_home.clone(),
             Some(home.clone()),
@@ -1141,7 +1141,7 @@ mod tests {
         );
 
         // The post-`/import-claude` shape: listed, compat scan off.
-        let mut compat = CompatConfig::default();
+        let mut compat = CompatConfig::all_on();
         compat.claude.rules = false;
         let configs = read_agents_config_with_roots(
             cwd.to_str().unwrap(),
@@ -1189,7 +1189,7 @@ mod tests {
         let configs = read_agents_config_with_roots(
             repo.to_str().unwrap(),
             None,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             &PathsConfig::default(),
             grok_home,
             Some(home),
@@ -1236,7 +1236,7 @@ mod tests {
         let configs = read_agents_config_with_options(
             repo_root.to_str().unwrap(),
             Some(&user_dir),
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             &PathsConfig::default(),
             /*project_trusted*/ true,
         )
@@ -1355,7 +1355,7 @@ mod tests {
         let configs = read_agents_config_with_options(
             repo_root.to_str().unwrap(),
             None,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             &PathsConfig::default(),
             /*project_trusted*/ true,
         )
@@ -1373,6 +1373,7 @@ mod tests {
         );
     }
 
+    #[cfg(feature = "vendor-compat")]
     #[tokio::test]
     async fn read_agents_config_claude_subdir_and_direct_both_found() {
         let tmp = tempfile::tempdir().unwrap();
@@ -1390,7 +1391,7 @@ mod tests {
         let configs = read_agents_config_with_options(
             repo_root.to_str().unwrap(),
             None,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             &PathsConfig::default(),
             /*project_trusted*/ true,
         )

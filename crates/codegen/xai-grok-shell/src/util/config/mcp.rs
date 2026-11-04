@@ -827,7 +827,7 @@ pub fn cli_known_mcp_server_names(cwd: &std::path::Path) -> std::collections::Ha
     names.extend(all_toml_mcp_server_names(cwd));
 
     let registry = load_cli_plugin_registry(cwd);
-    let compat = CompatConfig::default();
+    let compat = CompatConfig::all_on();
     for (server, _) in crate::session::managed_mcp::merge_managed_mcp_servers_sourced(
         cwd,
         Some(&registry),

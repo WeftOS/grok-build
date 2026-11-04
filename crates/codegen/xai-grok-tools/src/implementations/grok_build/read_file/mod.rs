@@ -2490,6 +2490,7 @@ pub fn verify(req: &HttpRequest) -> Result<Claims, Error> {
             );
         }
     }
+    #[cfg(feature = "vendor-compat")]
     #[test]
     fn is_instruction_markdown_matches_exact_names_only() {
         for (path, expected) in [

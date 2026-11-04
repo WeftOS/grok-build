@@ -132,7 +132,7 @@ fn spawn_ctx(parent_cwd: PathBuf) -> SubagentSpawnContext {
         parent_tool_definitions: None,
         parent_skills: None,
         parent_skills_config: xai_grok_agent::prompt::skills::SkillsConfig::default(),
-        parent_compat: xai_grok_tools::types::compat::CompatConfig::default(),
+        parent_compat: xai_grok_tools::types::compat::CompatConfig::all_on(),
         parent_paths_config: Default::default(),
         synthetic_trace_tx: None,
         task_output_tool_name: xai_grok_tools::reminders::task_completion::DEFAULT_TASK_OUTPUT_TOOL

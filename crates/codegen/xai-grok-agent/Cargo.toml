@@ -34,6 +34,8 @@ zeroize = "1"
 xai-tool-types.workspace = true
 
 [features]
+# Tapestry: build the Claude Code / Cursor / Codex loaders in (off by default)
+vendor-compat = ["xai-grok-config/vendor-compat"]
 default = []
 default-bazel = []
 

@@ -526,7 +526,7 @@ pub(crate) fn test_rebuild_spec_default() -> Arc<AgentRebuildSpec> {
         role_instructions: None,
         persona_instructions: None,
         skills_config: SkillsConfig::default(),
-        compat: CompatConfig::default(),
+        compat: CompatConfig::all_on(),
         paths_config: Default::default(),
         context_window_tokens: 256_000,
         prompt_working_directory: None,

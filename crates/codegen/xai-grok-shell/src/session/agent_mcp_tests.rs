@@ -75,7 +75,7 @@ fn has_server(servers: &[acp::McpServer], name: &str) -> bool {
 /// Isolate `find_project_configs` to this tempdir so `enabled = false` is visible to
 /// [`crate::util::config::disabled_mcp_server_names`].
 fn diskless_compat() -> CompatConfig {
-    let mut compat = CompatConfig::default();
+    let mut compat = CompatConfig::all_on();
     compat.claude.mcps = false;
     compat.cursor.mcps = false;
     compat

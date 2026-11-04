@@ -276,6 +276,7 @@ fn integration_claude_settings_file_to_permission_config() {
 }
 
 /// Discovery order: project paths before global, and settings.local.json before settings.json within each directory.
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn discovery_priority_order() {
     let home = isolated_home();
@@ -296,6 +297,7 @@ fn discovery_priority_order() {
 }
 
 /// When no .claude/settings.json exists anywhere, find returns paths but load returns None for each.
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn discovery_with_no_settings_files() {
     let _home = isolated_home();
@@ -336,6 +338,7 @@ fn project_claude_absent_when_home_is_git_repo() {
 // defaultMode + resolve_claude_permissions tests
 // ═══════════════════════════════════════════════════════════════════════
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn default_mode_accept_edits_produces_allow_edit_rule() {
     let _home = isolated_home();
@@ -383,6 +386,7 @@ fn default_mode_accept_edits_produces_allow_edit_rule() {
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn default_mode_accept_edits_no_permissions_still_produces_rule() {
     let _home = isolated_home();
@@ -415,6 +419,7 @@ fn default_mode_accept_edits_no_permissions_still_produces_rule() {
     assert!(skipped.is_empty());
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn claude_only_returns_claude_settings_source() {
     let _home = isolated_home();
@@ -450,6 +455,7 @@ fn no_claude_settings_returns_none() {
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn default_mode_accept_edits_explicit_deny_takes_priority() {
     let _home = isolated_home();
@@ -576,6 +582,7 @@ fn load_settings_no_env_field() {
     assert!(settings.env.is_none());
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn load_claude_env_merges_with_precedence() {
     // Isolate GROK_HOME (claude-import marker) and HOME (global `~/.claude`); an imported dev machine would otherwise early-return an empty map
@@ -614,6 +621,7 @@ fn load_claude_env_empty_when_no_settings() {
     assert!(env.is_empty());
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn load_claude_env_with_project_drops_repo_env_when_untrusted() {
     // Repo-tree `.claude` env is injected into every subprocess, so an untrusted folder must drop it
@@ -939,6 +947,7 @@ fn parse_bare_unknown_stays_glob_pattern() {
 // Cross-file permission merging tests
 // ═══════════════════════════════════════════════════════════════════════
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn merge_permissions_across_project_and_global_settings() {
     let _home = isolated_home();
@@ -993,6 +1002,7 @@ fn merge_permissions_across_project_and_global_settings() {
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn merge_deny_from_project_with_allow_from_parent() {
     let _home = isolated_home();
@@ -1040,6 +1050,7 @@ fn merge_deny_from_project_with_allow_from_parent() {
     assert_eq!(allow_rules.len(), 1, "expected 1 allow rule");
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn default_mode_from_specific_file_wins() {
     let _home = isolated_home();
@@ -1085,6 +1096,7 @@ fn default_mode_from_specific_file_wins() {
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn default_mode_inherited_from_parent_when_not_set() {
     let _home = isolated_home();
@@ -1130,6 +1142,7 @@ fn default_mode_inherited_from_parent_when_not_set() {
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn single_file_still_works() {
     // Isolate HOME so host/CI `~/.claude` rules don't bleed into the count; paths merge global and project settings
@@ -1151,6 +1164,7 @@ fn single_file_still_works() {
 }
 
 /// Untrusted clone must not honor project `.claude/settings.json` permission rules or `defaultMode` (including bypassPermissions).
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn untrusted_project_claude_permissions_are_not_honored() {
     let home = isolated_home();
@@ -1302,6 +1316,7 @@ allow = ["Bash(evil *)"]
 // bypassPermissions defaultMode tests
 // ═══════════════════════════════════════════════════════════════════════
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn bypass_permissions_produces_catch_all_allow() {
     let _home = isolated_home();
@@ -1347,6 +1362,7 @@ fn bypass_permissions_produces_catch_all_allow() {
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn bypass_permissions_with_explicit_deny_still_has_deny() {
     let _home = isolated_home();
@@ -1368,6 +1384,7 @@ fn bypass_permissions_with_explicit_deny_still_has_deny() {
         && r.pattern.is_none()));
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn bypass_permissions_overrides_accept_edits_cross_file() {
     let _home = isolated_home();
@@ -1489,6 +1506,7 @@ fn block_on<F: std::future::Future>(future: F) -> F::Output {
 }
 
 /// Pin active: no catch-all Allow Any; explicit rules stay; the block is recorded as a skip for inspect.
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn bypass_permissions_blocked_by_policy_pin() {
     let _home = isolated_home();
@@ -1536,6 +1554,7 @@ fn bypass_permissions_blocked_by_policy_pin() {
 }
 
 /// A bypass-only file under the pin still resolves (zero rules) so the skip keeps provenance and reaches inspect instead of an early `None`.
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn bypass_permissions_blocked_pin_only_file_still_resolves() {
     let _home = isolated_home();
@@ -1575,6 +1594,7 @@ fn bypass_permissions_blocked_pin_only_file_still_resolves() {
 }
 
 /// The pin covers bypass only: acceptEdits (edits-only auto-approve) keeps its synthetic Allow Edit rule.
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn accept_edits_unaffected_by_policy_pin() {
     let _home = isolated_home();
@@ -2028,6 +2048,7 @@ fn drop_untrusted_freeform_catchalls_respects_source_and_scope() {
 }
 
 /// End-to-end: a `.claude` `permissions.allow: ["*"]` is dropped (and recorded) under the pin, kept without it.
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn claude_catchall_allow_dropped_under_pin() {
     use crate::policy::CompiledPolicy;
@@ -2090,6 +2111,7 @@ fn claude_catchall_allow_dropped_under_pin() {
 }
 
 /// End-to-end: a `.claude` `permissions.allow: ["**"]` auto-approves arbitrary bash without the pin, but is dropped under it.
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn claude_double_star_allow_dropped_under_pin() {
     use crate::policy::CompiledPolicy;
@@ -2144,6 +2166,7 @@ fn claude_double_star_allow_dropped_under_pin() {
 
 /// The pinned public entry: the caller-supplied lock, not the host's requirements.toml, controls the catch-all drop.
 /// On a pinned host the `None` leg proves disk state is ignored; on an unpinned host the `Some` leg proves the parameter alone drops the rule.
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn fallback_pinned_lock_param_controls_catchall_drop() {
     let _home = isolated_home();
@@ -2180,6 +2203,7 @@ fn fallback_pinned_lock_param_controls_catchall_drop() {
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn dont_ask_sets_prompt_policy_through_public_api() {
     let _home = isolated_home();
@@ -2198,6 +2222,7 @@ fn dont_ask_sets_prompt_policy_through_public_api() {
 
 /// Vendor settings write `defaultMode` under `permissions` (canonical).
 /// Regression: root-only reads silently ignored real user settings.
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn dont_ask_nested_under_permissions_sets_prompt_policy() {
     let _home = isolated_home();
@@ -2223,6 +2248,7 @@ fn dont_ask_nested_under_permissions_sets_prompt_policy() {
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn auto_nested_under_permissions_sets_prompt_policy() {
     let _home = isolated_home();
@@ -2287,6 +2313,7 @@ fn default_mode_from_str_and_effects() {
 }
 
 /// When every permission rule string fails to parse, skip-only resolution must not panic.
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn skip_only_invalid_permissions_resolves_without_panic() {
     let _home = isolated_home();
@@ -2331,6 +2358,7 @@ fn nested_wrong_type_does_not_fall_back_to_root_default_mode() {
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn unrecognized_project_mode_claims_scope_over_global_accept_edits() {
     let _home = isolated_home();
@@ -2374,6 +2402,7 @@ fn unrecognized_project_mode_claims_scope_over_global_accept_edits() {
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn managed_default_mode_dont_ask_outranks_user_accept_edits() {
     let _home = isolated_home();
@@ -2494,6 +2523,7 @@ fn managed_bypass_under_pin_records_skip_without_catchall() {
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn nested_dont_ask_with_allow_rules_preserves_allow_and_deny_policy() {
     let _home = isolated_home();
@@ -2594,6 +2624,7 @@ fn root_default_mode_still_works_as_compat_fallback() {
     assert_eq!(settings.default_mode.as_deref(), Some("acceptEdits"));
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn default_mode_known_values_no_warnings() {
     let _home = isolated_home();
@@ -2944,6 +2975,7 @@ fn permission_mode_hint_apply_matrix() {
 
 /// An explicit user-tier `defaultMode` stamps `default_mode_configured` even when it projects to `Ask`, so the alwaysAllow hint cannot override it.
 /// The rule-less case must survive the empty-config drop. Sync `block_on` so `ENV_LOCK` is not held across `.await`.
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn explicit_default_mode_blocks_permission_mode_hint() {
     let _guard = ENV_LOCK.lock().unwrap_or_else(|e| e.into_inner());
@@ -2991,4 +3023,30 @@ fn explicit_default_mode_blocks_permission_mode_hint() {
             "{label}"
         );
     }
+}
+
+/// Tapestry R17: a populated `~/.claude` and project `.claude/` contribute no permissions, env or `.mcp.json`.
+#[cfg(not(feature = "vendor-compat"))]
+#[test]
+fn vendor_settings_and_mcp_json_are_never_discovered() {
+    let home = isolated_home();
+    let tmp = tempfile::tempdir().unwrap();
+    let cwd = tmp.path();
+    std::fs::create_dir_all(cwd.join(".git")).unwrap();
+    for dir in [cwd.join(".claude"), home.path().join(".claude")] {
+        std::fs::create_dir_all(&dir).unwrap();
+        std::fs::write(
+            dir.join("settings.json"),
+            r#"{"permissions": {"allow": ["Bash(ls:*)"]}, "env": {"VENDOR_TEST_ENV": "1"}}"#,
+        )
+        .unwrap();
+    }
+    std::fs::write(cwd.join(".mcp.json"), r#"{"mcpServers": {"v": {"command": "v"}}}"#).unwrap();
+
+    assert!(find_claude_settings_paths(cwd).is_empty());
+    assert!(!has_claude_compat(cwd));
+    assert!(!project_claude_settings_present(cwd));
+    assert!(load_claude_env_with_project(cwd, true).is_empty());
+    assert!(crate::project_config::find_mcp_json_files(cwd).is_empty());
+    assert!(crate::project_config::mcp_json_candidate_paths(cwd).is_empty());
 }

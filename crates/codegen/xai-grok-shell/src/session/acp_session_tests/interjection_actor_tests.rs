@@ -253,7 +253,7 @@ async fn drain_interjection_expands_skill_slash_reference() {
                     None,
                     Some(256_000),
                     None,
-                    xai_grok_tools::types::compat::CompatConfig::default(),
+                    xai_grok_tools::types::compat::CompatConfig::all_on(),
                 )
                 .await;
 

@@ -329,6 +329,10 @@ pub fn find_claude_settings_paths(cwd: &Path) -> Vec<PathBuf> {
 /// `xai_dirs::home_dir()` matches Node `os.homedir()` so these paths test as global in the import scanner.
 fn global_claude_settings_paths() -> Vec<PathBuf> {
     let mut paths = Vec::new();
+    // Tapestry: no Claude settings are read unless `vendor-compat` is built in
+    if !xai_grok_config::compat::VENDOR_COMPAT {
+        return paths;
+    }
     if let Some(home) = xai_dirs::home_dir() {
         let global = home.join(".claude");
         paths.push(global.join("settings.local.json"));
@@ -360,6 +364,9 @@ pub fn project_claude_settings_present(cwd: &Path) -> bool {
 /// Collect `.claude` settings from cwd up to repo root.
 /// Root is `.git` existence, not `git2` validity, so a bare or empty `.git` still bounds the walk; loader and trust detector share this so they cannot drift.
 fn collect_project_claude_paths(cwd: &Path) -> Vec<PathBuf> {
+    if !xai_grok_config::compat::VENDOR_COMPAT {
+        return Vec::new();
+    }
     // When `$HOME` is itself a git repo, drop that root so `~/.claude` is not treated as project-tier for every cwd under home
     // Fall back to cwd; this is the shared choke point for `project_claude_settings_present` and `find_claude_settings_paths`
     let repo_root = find_repo_root(cwd)

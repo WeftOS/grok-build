@@ -214,7 +214,7 @@ fn user_plugin_dirs(home: Option<&Path>, grok: Option<&Path>) -> Vec<(PathBuf, P
     if let Some(g) = grok {
         dirs.push((g.join("plugins"), PluginOrigin::UserGrok));
     }
-    if let Some(h) = home {
+    if let Some(h) = home.filter(|_| xai_grok_config::compat::VENDOR_COMPAT) {
         dirs.push((h.join(".claude").join("plugins"), PluginOrigin::UserClaude));
     }
     dirs
@@ -247,7 +247,12 @@ pub fn project_plugin_dirs(cwd: Option<&Path>) -> (Vec<PathBuf>, Option<PathBuf>
 /// Existing project plugin parent dirs (`.grok/plugins`, `.claude/plugins`) under each dir of a precomputed [`crate::repo::RepoDirChain`].
 /// The folder-trust gate reuses its one shared chain here so detection and discovery can never drift.
 pub fn project_plugin_dirs_in(chain_dirs: &[PathBuf]) -> Vec<PathBuf> {
-    crate::repo::existing_subdirs_along(chain_dirs, &[".grok/plugins", ".claude/plugins"])
+    // Tapestry: `.claude/plugins` is not scanned unless `vendor-compat` is built in
+    if xai_grok_config::compat::VENDOR_COMPAT {
+        crate::repo::existing_subdirs_along(chain_dirs, &[".grok/plugins", ".claude/plugins"])
+    } else {
+        crate::repo::existing_subdirs_along(chain_dirs, &[".grok/plugins"])
+    }
 }
 
 /// `cwd` is used to find the git worktree root for project-scope plugins.
@@ -893,6 +898,21 @@ mod tests {
         }
     }
 
+    #[cfg(not(feature = "vendor-compat"))]
+    #[test]
+    fn plugin_dirs_never_include_claude() {
+        let home = Path::new("/home/u");
+        let grok = Path::new("/custom/grokhome");
+        let dirs = user_plugin_dirs(Some(home), Some(grok));
+        assert_eq!(dirs.len(), 1);
+        assert_eq!(dirs[0].0, grok.join("plugins"));
+        let chain = vec![PathBuf::from("/nonexistent-tapestry-chain")];
+        assert!(project_plugin_dirs_in(&chain).is_empty());
+        assert!(super::super::marketplace::resolve(Path::new("/nonexistent")).is_empty());
+        assert!(super::super::marketplace::resolve_known_marketplaces().is_empty());
+    }
+
+    #[cfg(feature = "vendor-compat")]
     #[test]
     fn user_plugin_dirs_are_grok_and_claude_only_no_legacy() {
         let home = Path::new("/home/u");
@@ -1568,6 +1588,7 @@ mod tests {
         assert!(p.trusted, "trusted folder must allow the project plugin");
     }
 
+    #[cfg(feature = "vendor-compat")]
     #[test]
     fn discover_project_claude_plugin_records_claude_origin() {
         // Unique name: discover_plugins also scans the dev machine's real user dirs, and this test finds its plugin by name

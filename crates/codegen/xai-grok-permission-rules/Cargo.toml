@@ -26,6 +26,10 @@ xai-grok-paths = { path = "../xai-grok-paths" }
 xai-grok-version = { workspace = true }
 xai-sqlite-journal = { workspace = true }
 
+[features]
+# Tapestry: build the Claude Code / Cursor / Codex loaders in (off by default)
+vendor-compat = ["xai-grok-config/vendor-compat"]
+
 [dev-dependencies]
 tokio = { workspace = true }
 tracing-subscriber = { workspace = true }

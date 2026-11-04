@@ -1,5 +1,6 @@
 use super::*;
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn each_name_comes_from_its_highest_precedence_source() {
     let workspace = Workspace::new();
@@ -103,7 +104,7 @@ impl Workspace {
         project_configs: Vec<PathBuf>,
         mcp_json_files: Vec<PathBuf>,
     ) -> McpServerSources {
-        let mut compat = CompatConfig::default();
+        let mut compat = CompatConfig::all_on();
         compat.claude.mcps = false;
         compat.cursor.mcps = false;
         McpServerSources {

@@ -419,6 +419,10 @@ fn disabled_vendor_block_keys(
     preferences: &McpPreferencesFile,
 ) -> HashMap<String, CompatVendor> {
     let mut blocked = HashMap::new();
+    if !crate::compat::VENDOR_COMPAT {
+        // Tapestry: no vendor file is read, so there is nothing to attribute or block.
+        return blocked;
+    }
     if !compat.cursor.mcps {
         let mut forced = *compat;
         forced.cursor.mcps = true;
@@ -455,3 +459,7 @@ fn vendor_block_key(server: &acp::McpServer) -> String {
 #[cfg(test)]
 #[path = "mcp_servers_tests.rs"]
 mod tests;
+
+#[cfg(test)]
+#[path = "vendor_isolation_tests.rs"]
+mod vendor_isolation_tests;

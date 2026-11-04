@@ -66,6 +66,7 @@ fn client_list_replaces_only_a_different_definition_and_keeps_a_matching_source(
     assert_eq!("other", stdio_command(server_named(&list, "plugin-corp")).0);
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn vendor_mcps_off_skips_the_matching_client_server_and_keeps_the_toml_definition() {
     let workspace = Workspace::new();
@@ -149,6 +150,7 @@ fn session_tier_is_native_only_for_config_toml_and_plugin_origins() {
     }
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn normalized_vendor_url_skips_a_differently_named_client_server() {
     let workspace = Workspace::new();
@@ -174,6 +176,7 @@ fn normalized_vendor_url_skips_a_differently_named_client_server() {
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn a_client_server_dropped_at_admission_stays_out_after_its_vendor_file_is_removed() {
     let workspace = Workspace::new();
@@ -268,7 +271,7 @@ impl Workspace {
     }
 
     fn sources(&self, project_configs: Vec<PathBuf>) -> McpServerSources {
-        let mut compat = CompatConfig::default();
+        let mut compat = CompatConfig::all_on();
         compat.claude.mcps = false;
         compat.cursor.mcps = false;
         McpServerSources {

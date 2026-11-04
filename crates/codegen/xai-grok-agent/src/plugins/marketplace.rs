@@ -17,6 +17,9 @@ pub struct ResolvedMarketplace {
 /// Resolve marketplaces and their enabled plugins from `extraKnownMarketplaces` and `enabledPlugins` in `.claude/settings.json`.
 /// Only local directory sources are supported.
 pub fn resolve(git_root: &Path) -> Vec<ResolvedMarketplace> {
+    if !xai_grok_config::compat::VENDOR_COMPAT {
+        return vec![];
+    }
     let settings_path = git_root.join(".claude").join("settings.json");
     let json: serde_json::Value = match std::fs::read_to_string(&settings_path) {
         Ok(c) => match serde_json::from_str(&c) {
@@ -154,6 +157,9 @@ struct KnownMarketplaceEntry {
 /// Plugin dirs are filtered to names listed in `~/.claude/settings{.local}.json` `enabledPlugins`, so never-installed catalog plugins are skipped.
 /// A `false` entry there is an installed-but-disabled plugin; it is still discovered so its state can be mirrored.
 pub fn resolve_known_marketplaces() -> Vec<ResolvedMarketplace> {
+    if !xai_grok_config::compat::VENDOR_COMPAT {
+        return vec![];
+    }
     let Some(home) = xai_dirs::home_dir() else {
         return vec![];
     };

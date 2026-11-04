@@ -69,7 +69,7 @@ pub(crate) async fn discover_mcp_servers(
     let started = std::time::Instant::now();
     let servers = tokio::task::spawn_blocking(move || xai_grok_shell::util::config::load_mcp_servers(
             &cwd,
-            &xai_grok_tools::types::compat::CompatConfig::default(),
+            &xai_grok_tools::types::compat::CompatConfig::all_on(),
         ))
         .await
         .unwrap_or_else(|error| {

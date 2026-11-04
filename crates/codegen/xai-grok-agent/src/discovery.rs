@@ -13,7 +13,11 @@ use crate::error::AgentBuildError;
 use crate::prompt::context::TemplateOverride;
 
 /// Project-level agent directories to scan (`.grok/agents/` plus `.claude/agents/` for compat).
+#[cfg(feature = "vendor-compat")]
 const PROJECT_AGENT_SUBDIRS: &[&str] = &[".grok/agents", ".claude/agents"];
+/// Tapestry: `.claude/agents` is not scanned unless `vendor-compat` is built in.
+#[cfg(not(feature = "vendor-compat"))]
+const PROJECT_AGENT_SUBDIRS: &[&str] = &[".grok/agents"];
 
 /// Existing project-level agent dirs (`.grok/agents` / `.claude/agents`), walked from `cwd` up to the git worktree root (inclusive).
 /// Returns `(existing dirs, git_root)`.
@@ -186,7 +190,7 @@ pub(crate) fn user_agent_dirs(
     if let Some(l) = &legacy_grok {
         dirs.push((l.join("agents"), AgentScope::User));
     }
-    if let Some(h) = home {
+    if let Some(h) = home.filter(|_| xai_grok_config::compat::VENDOR_COMPAT) {
         dirs.push((h.join(".claude").join("agents"), AgentScope::User));
     }
     if let Some(g) = grok_home {
@@ -735,6 +739,7 @@ mod tests {
         PluginRegistry::from_discovered(vec![discovered], &[], &[plugin_name.to_string()])
     }
 
+    #[cfg(feature = "vendor-compat")]
     #[test]
     fn user_agent_dirs_includes_legacy_grok_when_grok_home_differs() {
         let home = Path::new("/home/u");
@@ -748,6 +753,21 @@ mod tests {
         assert!(paths.contains(&home.join(".claude").join("agents")));
         assert!(paths.contains(&grok.join("bundled").join("agents")));
         assert!(paths.contains(&home.join(".grok").join("bundled").join("agents")));
+    }
+
+    #[cfg(not(feature = "vendor-compat"))]
+    #[test]
+    fn user_agent_dirs_never_include_claude_and_keep_native_dirs() {
+        let home = Path::new("/home/u");
+        let grok = Path::new("/custom/grokhome");
+        let paths: Vec<_> = user_agent_dirs(Some(home), Some(grok))
+            .into_iter()
+            .map(|(p, _)| p)
+            .collect();
+        assert!(paths.contains(&grok.join("agents")));
+        assert!(paths.contains(&home.join(".grok").join("agents")));
+        assert!(paths.iter().all(|p| !p.to_string_lossy().contains(".claude")));
+        assert_eq!(PROJECT_AGENT_SUBDIRS, &[".grok/agents"]);
     }
 
     #[test]

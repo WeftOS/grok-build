@@ -100,6 +100,7 @@ fn url_server_is_sse_by_type_or_path_and_http_otherwise() {
     }
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn each_server_names_the_file_that_defined_it() {
     let workspace = Workspace::new();
@@ -250,6 +251,7 @@ fn servers_left_out_name_their_reason() {
     }
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn client_server_matching_a_disabled_vendor_config_is_skipped_for_that_vendor() {
     let workspace = Workspace::new();
@@ -382,6 +384,7 @@ tool_timeout_sec = 600
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn unparseable_entry_is_skipped_and_leaves_its_name_to_lower_sources() {
     let workspace = Workspace::new();
@@ -544,7 +547,7 @@ impl Workspace {
         project_configs: Vec<PathBuf>,
         mcp_json_files: Vec<PathBuf>,
     ) -> McpServerSources {
-        let mut compat = CompatConfig::default();
+        let mut compat = CompatConfig::all_on();
         compat.claude.mcps = false;
         compat.cursor.mcps = false;
         McpServerSources {

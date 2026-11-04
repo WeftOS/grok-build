@@ -390,6 +390,7 @@ mod tests {
         assert!(results.first().is_some_and(|r| r.ends_with("AGENTS.md")));
     }
 
+    #[cfg(feature = "vendor-compat")]
     #[tokio::test]
     async fn check_path_finds_all_filename_variants() {
         let tmp = tempfile::tempdir().unwrap();
@@ -736,6 +737,7 @@ mod tests {
 
     // ── Rules directory discovery tests ─────────────────────────────
 
+    #[cfg(feature = "vendor-compat")]
     #[tokio::test]
     async fn check_path_discovers_claude_rules_dir() {
         let tmp = tempfile::tempdir().unwrap();
@@ -762,6 +764,7 @@ mod tests {
         );
     }
 
+    #[cfg(feature = "vendor-compat")]
     #[tokio::test]
     async fn check_path_rules_not_reminded_twice() {
         let tmp = tempfile::tempdir().unwrap();
@@ -787,6 +790,7 @@ mod tests {
 
     // ── AGENT_SUBDIRS discovery tests ───────────────────────────────
 
+    #[cfg(feature = "vendor-compat")]
     #[tokio::test]
     async fn check_path_discovers_claude_subdir_claude_md() {
         let tmp = tempfile::tempdir().unwrap();
@@ -818,10 +822,11 @@ mod tests {
     /// Pin that the all-on compat helpers reproduce the legacy constants
     /// exactly (same entries, same order). If either drifts, the
     /// byte-for-byte default-behavior invariant is broken.
+    #[cfg(feature = "vendor-compat")]
     #[test]
     fn compat_default_matches_legacy_constants() {
         use crate::types::compat::CompatConfig;
-        let c = CompatConfig::default();
+        let c = CompatConfig::all_on();
         assert_eq!(c.agent_filenames(), AGENT_FILENAMES.to_vec());
         assert_eq!(c.rules_dirs(), RULES_DIRS.to_vec());
     }
@@ -838,7 +843,7 @@ mod tests {
         fs::create_dir_all(&rules_dir).unwrap();
         fs::write(rules_dir.join("r.md"), "# Cursor rule").unwrap();
 
-        let mut compat = CompatConfig::default();
+        let mut compat = CompatConfig::all_on();
         compat.cursor.rules = false;
 
         let mut tracker = AgentsMdTracker::new();
@@ -866,7 +871,7 @@ mod tests {
         fs::create_dir_all(&claude_dir).unwrap();
         fs::write(claude_dir.join("CLAUDE.md"), "# Project instructions").unwrap();
 
-        let mut compat = CompatConfig::default();
+        let mut compat = CompatConfig::all_on();
         compat.claude.agents = false;
 
         let mut tracker = AgentsMdTracker::new();

@@ -42,6 +42,9 @@ tempfile = { workspace = true }
 
 [features]
 default-bazel = []
+# Tapestry: read Claude Code / Cursor / Codex skills, agents, MCP servers, hooks, permissions and
+# instruction files. Off by default and enabled by no Tapestry binary; see compat::VENDOR_COMPAT.
+vendor-compat = []
 # TS bindings for the announcement types only; see xai-grok-announcements/generate.sh.
 ts = ["dep:ts-rs"]
 

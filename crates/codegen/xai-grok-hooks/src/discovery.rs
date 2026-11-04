@@ -339,9 +339,11 @@ pub struct DiscoveryOptions<'a> {
 /// A vendor settings path must be added here and to
 /// `xai_grok_workspace::folder_trust::repo_configs_present`, which probes the same paths.
 pub fn discover_hook_source_paths(options: DiscoveryOptions<'_>) -> HookSourcePaths {
+    // Tapestry: vendor hook files are read only when `vendor-compat` is built in
+    let vendor = xai_grok_config::compat::VENDOR_COMPAT;
     let include_claude =
-        options.compat.claude && options.claude_import == ClaudeImport::NotImported;
-    let include_cursor = options.compat.cursor;
+        vendor && options.compat.claude && options.claude_import == ClaudeImport::NotImported;
+    let include_cursor = vendor && options.compat.cursor;
 
     let mut global: Vec<HookSourceConfig> =
         match resolve_global_hook_sources(options.grok_home, /* reject_symlinks */ false) {
@@ -1411,6 +1413,25 @@ timeout = 5
         assert_eq!(1, registry.hooks_for(HookEventName::PreToolUse).len());
     }
 
+    #[cfg(not(feature = "vendor-compat"))]
+    #[test]
+    fn vendor_hook_files_are_never_sources_even_with_every_cell_on() {
+        let root = tempfile::tempdir().unwrap();
+        let home = tempfile::tempdir().unwrap();
+        let paths = discover_hook_source_paths(DiscoveryOptions {
+            git_root: Some(root.path()),
+            grok_home: None,
+            home: Some(home.path()),
+            compat: ALL_HOOKS,
+            claude_import: ClaudeImport::NotImported,
+            trust: Trust::Trusted,
+        });
+        let listed = format!("{:?}{:?}", paths.global, paths.project);
+        assert!(!listed.contains(".claude"), "{listed}");
+        assert!(!listed.contains(".cursor"), "{listed}");
+    }
+
+    #[cfg(feature = "vendor-compat")]
     #[test]
     fn directory_at_cursor_hooks_json_does_not_load_child_hooks() {
         let root = tempfile::tempdir().unwrap();

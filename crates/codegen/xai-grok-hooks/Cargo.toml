@@ -25,6 +25,10 @@ xai-grok-config = { workspace = true }
 xai-grok-sandbox = { path = "../xai-grok-sandbox", default-features = false }
 xai-grok-tools = { workspace = true }
 
+[features]
+# Tapestry: build the Claude Code / Cursor / Codex loaders in (off by default)
+vendor-compat = ["xai-grok-config/vendor-compat"]
+
 [dev-dependencies]
 tempfile = { workspace = true }
 tokio = { workspace = true, features = ["full"] }

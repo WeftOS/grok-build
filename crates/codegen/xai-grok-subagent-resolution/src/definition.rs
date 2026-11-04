@@ -501,7 +501,7 @@ mod tests {
         let message = render_subagent_initial_user_message(
             &definition,
             cwd.path(),
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             &xai_grok_agent::prompt::paths::PathsConfig::default(),
             true,
         )

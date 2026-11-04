@@ -45,14 +45,16 @@ fn remote_settings_with(key: CompatRemoteKey, value: bool) -> RemoteSettings {
     remote
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn resolve_compat_defaults_match_registry() {
     assert_eq!(
-        CompatConfig::default(),
+        CompatConfig::all_on(),
         resolve_compat_config(&CompatConfigToml::default(), &CompatEnv::default(), None)
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn resolve_compat_toml_sessions_disable_independently() {
     for (vendor, section) in [
@@ -68,6 +70,7 @@ fn resolve_compat_toml_sessions_disable_independently() {
     }
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn resolve_compat_sessions_fails_closed_per_vendor() {
     let effective_config: toml::Value = toml::from_str(
@@ -94,6 +97,7 @@ hooks = "unrelated malformed field"
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn resolve_compat_sessions_keeps_absent_and_valid_cells_independent() {
     let effective_config: toml::Value = toml::from_str(
@@ -127,6 +131,7 @@ sessions = true
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn resolve_compat_hooks_treats_an_unreadable_cell_as_unset() {
     let cursor_off: toml::Value = toml::from_str("[compat.cursor]\nhooks = false\n").unwrap();
@@ -247,6 +252,7 @@ fn resolve_compat_sessions_load_failure_fails_closed() {
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn resolve_compat_sessions_load_failure_allows_env_override() {
     let env = env_with(&[("GROK_CODEX_SESSIONS_ENABLED", true)]);
@@ -263,6 +269,7 @@ fn resolve_compat_sessions_load_failure_allows_env_override() {
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn resolve_compat_sessions_valid_empty_uses_remote_and_defaults() {
     let effective_config = toml::Value::Table(toml::map::Map::new());
@@ -306,7 +313,7 @@ fn remote_keys_are_one_hot_and_false_overrides_default() {
     }
 
     let remote = remote_settings_with(CompatRemoteKey::CursorSkills, false);
-    assert!(CompatConfig::default().cursor.skills);
+    assert!(CompatConfig::all_on().cursor.skills);
     assert!(
         !resolve_compat_config(
             &CompatConfigToml::default(),
@@ -318,6 +325,7 @@ fn remote_keys_are_one_hot_and_false_overrides_default() {
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn resolve_compat_env_sessions_disable_independently() {
     for (vendor, env_var) in [
@@ -336,6 +344,7 @@ fn resolve_compat_env_sessions_disable_independently() {
     }
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn resolve_compat_precedence_and_reserved_codex_hook() {
     let config = parse_compat("[compat.cursor]\nsessions = false\n[compat.codex]\nhooks = false");
@@ -393,7 +402,7 @@ fn registry_and_defaults_cover_every_cell() {
         ]
     );
 
-    let defaults = CompatConfig::default();
+    let defaults = CompatConfig::all_on();
     for cell in COMPAT_CELLS {
         assert!(
             defaults.value(cell),
@@ -441,20 +450,20 @@ fn registry_and_defaults_cover_every_cell() {
 fn skill_config_dirs_all_on_lists_every_vendor() {
     assert_eq!(
         vec![".grok", ".agents", ".claude", ".cursor"],
-        CompatConfig::default().skill_config_dirs()
+        CompatConfig::all_on().skill_config_dirs()
     );
 }
 
 #[test]
 fn skill_config_dirs_gates_each_vendor() {
-    let mut c = CompatConfig::default();
+    let mut c = CompatConfig::all_on();
     c.cursor.skills = false;
     assert_eq!(vec![".grok", ".agents", ".claude"], c.skill_config_dirs());
 
     c.claude.skills = false;
     assert_eq!(vec![".grok", ".agents"], c.skill_config_dirs());
 
-    let mut c2 = CompatConfig::default();
+    let mut c2 = CompatConfig::all_on();
     c2.claude.skills = false;
     assert_eq!(vec![".grok", ".agents", ".cursor"], c2.skill_config_dirs());
 }
@@ -463,19 +472,20 @@ fn skill_config_dirs_gates_each_vendor() {
 fn rules_dirs_all_on_lists_every_vendor() {
     assert_eq!(
         vec![".grok/rules", ".claude/rules", ".cursor/rules"],
-        CompatConfig::default().rules_dirs()
+        CompatConfig::all_on().rules_dirs()
     );
 }
 
 #[test]
 fn rules_dirs_gates_each_vendor() {
-    let mut c = CompatConfig::default();
+    let mut c = CompatConfig::all_on();
     c.cursor.rules = false;
     assert_eq!(vec![".grok/rules", ".claude/rules"], c.rules_dirs());
     c.claude.rules = false;
     assert_eq!(vec![".grok/rules"], c.rules_dirs());
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn agent_filenames_all_on_include_the_claude_subdir() {
     assert_eq!(
@@ -489,13 +499,14 @@ fn agent_filenames_all_on_include_the_claude_subdir() {
             ".claude/CLAUDE.md",
             ".claude/CLAUDE.local.md",
         ],
-        CompatConfig::default().agent_filenames()
+        CompatConfig::all_on().agent_filenames()
     );
 }
 
+#[cfg(feature = "vendor-compat")]
 #[test]
 fn agent_filenames_drops_claude_subdir_when_off() {
-    let mut c = CompatConfig::default();
+    let mut c = CompatConfig::all_on();
     c.claude.agents = false;
     assert_eq!(
         vec![
@@ -514,13 +525,13 @@ fn agent_filenames_drops_claude_subdir_when_off() {
 fn agents_home_dirs_all_on_lists_every_vendor() {
     assert_eq!(
         vec![".claude", ".cursor"],
-        CompatConfig::default().agents_home_dirs()
+        CompatConfig::all_on().agents_home_dirs()
     );
 }
 
 #[test]
 fn agents_home_dirs_gates_each_vendor() {
-    let mut c = CompatConfig::default();
+    let mut c = CompatConfig::all_on();
     c.claude.agents = false;
     assert_eq!(vec![".cursor"], c.agents_home_dirs());
     c.cursor.agents = false;

@@ -46,7 +46,7 @@ fn discover_hook_source_paths_skips_claude_when_marker_set() {
     let _g = MarkerGuard;
     refresh_marker_cache(true);
     let dir = tempfile::tempdir().unwrap();
-    let compat = xai_grok_tools::types::compat::CompatConfig::default();
+    let compat = xai_grok_tools::types::compat::CompatConfig::all_on();
     let paths = source_paths(dir.path(), &compat);
     let project_strs = source_path_strs(&paths.project);
     assert!(
@@ -84,7 +84,7 @@ fn discover_hook_source_paths_includes_claude_when_marker_unset() {
     let _g = MarkerGuard;
     refresh_marker_cache(false);
     let dir = tempfile::tempdir().unwrap();
-    let compat = xai_grok_tools::types::compat::CompatConfig::default();
+    let compat = xai_grok_tools::types::compat::CompatConfig::all_on();
     let paths = source_paths(dir.path(), &compat);
     let project_strs = source_path_strs(&paths.project);
     assert!(
@@ -100,7 +100,7 @@ fn discover_hook_source_paths_includes_cursor_hooks_json() {
     let _g = MarkerGuard;
     refresh_marker_cache(false);
     let dir = tempfile::tempdir().unwrap();
-    let compat = xai_grok_tools::types::compat::CompatConfig::default();
+    let compat = xai_grok_tools::types::compat::CompatConfig::all_on();
     let paths = source_paths(dir.path(), &compat);
     let global_strs = source_path_strs(&paths.global);
     assert!(
@@ -126,7 +126,7 @@ fn discover_hook_source_paths_skips_cursor_when_disabled() {
     let _g = MarkerGuard;
     refresh_marker_cache(false);
     let dir = tempfile::tempdir().unwrap();
-    let mut compat = xai_grok_tools::types::compat::CompatConfig::default();
+    let mut compat = xai_grok_tools::types::compat::CompatConfig::all_on();
     compat.cursor.hooks = false;
     let paths = source_paths(dir.path(), &compat);
     let global_strs = source_path_strs(&paths.global);
@@ -149,7 +149,7 @@ fn discover_hook_source_paths_skips_claude_when_compat_disabled() {
     let _g = MarkerGuard;
     refresh_marker_cache(false);
     let dir = tempfile::tempdir().unwrap();
-    let mut compat = xai_grok_tools::types::compat::CompatConfig::default();
+    let mut compat = xai_grok_tools::types::compat::CompatConfig::all_on();
     compat.claude.hooks = false;
     let paths = source_paths(dir.path(), &compat);
     let global_strs = source_path_strs(&paths.global);
@@ -172,7 +172,7 @@ fn as_sources_gates_project_sources_on_trust() {
     let _g = MarkerGuard;
     refresh_marker_cache(false);
     let dir = tempfile::tempdir().unwrap();
-    let compat = xai_grok_tools::types::compat::CompatConfig::default();
+    let compat = xai_grok_tools::types::compat::CompatConfig::all_on();
     let paths = source_paths(dir.path(), &compat);
     assert!(
         !paths.project.is_empty(),
@@ -221,7 +221,7 @@ fn discover_hooks_honors_claude_compat_gate() {
         })
     };
 
-    let mut compat = xai_grok_tools::types::compat::CompatConfig::default();
+    let mut compat = xai_grok_tools::types::compat::CompatConfig::all_on();
 
     compat.claude.hooks = false;
     let (reg, _errs) = crate::util::hooks::discover_hooks(
@@ -288,7 +288,7 @@ fn gate_mcp_server_sources_report_imported_when_marker_set() {
     let _g = MarkerGuard;
     refresh_marker_cache(true);
     let dir = tempfile::tempdir().unwrap();
-    let compat = xai_grok_tools::types::compat::CompatConfig::default();
+    let compat = xai_grok_tools::types::compat::CompatConfig::all_on();
 
     let sources = crate::util::config::mcp_server_sources(dir.path(), &compat, "test");
 

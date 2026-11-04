@@ -705,7 +705,7 @@ mod tests {
             Some(&cwd.path().to_string_lossy()),
             &config,
             None,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             /*project_trusted*/ true,
         )
         .await;
@@ -742,7 +742,7 @@ mod tests {
             Some(&cwd.path().to_string_lossy()),
             &config,
             None,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             /*project_trusted*/ true,
         )
         .await;
@@ -775,7 +775,7 @@ mod tests {
             Some(&cwd.path().to_string_lossy()),
             &config,
             None,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             /*project_trusted*/ true,
         )
         .await;
@@ -1261,7 +1261,7 @@ mod tests {
             Some(repo_root.to_str().unwrap()),
             Some(&user_dir),
             tmp.path(),
-            CompatConfig::default(),
+            CompatConfig::all_on(),
         )
         .await;
 
@@ -1291,7 +1291,7 @@ mod tests {
             Some(user_dir.to_str().unwrap()),
             Some(&user_dir),
             tmp.path(),
-            CompatConfig::default(),
+            CompatConfig::all_on(),
         )
         .await;
 
@@ -1318,7 +1318,7 @@ mod tests {
             Some(repo_root.to_str().unwrap()),
             None,
             tmp.path(),
-            CompatConfig::default(),
+            CompatConfig::all_on(),
         )
         .await;
 
@@ -1346,7 +1346,7 @@ mod tests {
             Some(repo_root.to_str().unwrap()),
             Some(&user_dir),
             tmp.path(),
-            CompatConfig::default(),
+            CompatConfig::all_on(),
         )
         .await;
 
@@ -1723,6 +1723,7 @@ mod tests {
         assert_eq!(result.first().map(|s| s.name.as_str()), Some("keeper"));
     }
 
+    #[cfg(feature = "vendor-compat")]
     #[tokio::test]
     async fn untrusted_project_skills_are_omitted() {
         for config_dir in [".grok", ".agents", ".claude", ".cursor"] {
@@ -1748,14 +1749,14 @@ mod tests {
             let trusted = list_skills(
                 Some(subdir.to_str().unwrap()),
                 &SkillsConfig::default(),
-                CompatConfig::default(),
+                CompatConfig::all_on(),
                 /*project_trusted*/ true,
             )
             .await;
             let untrusted = list_skills(
                 Some(subdir.to_str().unwrap()),
                 &SkillsConfig::default(),
-                CompatConfig::default(),
+                CompatConfig::all_on(),
                 /*project_trusted*/ false,
             )
             .await;
@@ -1811,7 +1812,7 @@ mod tests {
         let skills = list_skills(
             Some(repo_root.to_str().unwrap()),
             &config,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             /*project_trusted*/ true,
         )
         .await;
@@ -1845,7 +1846,7 @@ mod tests {
         let skills = list_skills(
             Some(repo_root.to_str().unwrap()),
             &config,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             /*project_trusted*/ true,
         )
         .await;
@@ -1886,7 +1887,7 @@ mod tests {
         let skills = list_skills(
             Some(repo_root.to_str().unwrap()),
             &config,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             /*project_trusted*/ true,
         )
         .await;
@@ -1922,7 +1923,7 @@ mod tests {
         let skills = list_skills(
             Some(repo_root.to_str().unwrap()),
             &config,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             /*project_trusted*/ true,
         )
         .await;
@@ -2013,7 +2014,7 @@ mod tests {
         let skills = list_skills(
             Some(cwd.to_str().unwrap()),
             &config,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             /*project_trusted*/ true,
         )
         .await;
@@ -2062,7 +2063,7 @@ mod tests {
         let skills = list_skills(
             Some(repo_root.to_str().unwrap()),
             &config,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             /*project_trusted*/ true,
         )
         .await;
@@ -2107,7 +2108,7 @@ mod tests {
         let skills = list_skills(
             Some(repo_root.to_str().unwrap()),
             &config,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             /*project_trusted*/ true,
         )
         .await;
@@ -2136,7 +2137,7 @@ mod tests {
             Some(repo_root.to_str().unwrap()),
             None,
             &home,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
         )
         .await;
         let names: Vec<&str> = skills.iter().map(|s| s.name.as_str()).collect();
@@ -2170,7 +2171,7 @@ mod tests {
             Some(repo_root.to_str().unwrap()),
             None,
             &home,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
         )
         .await;
 
@@ -2242,7 +2243,7 @@ mod tests {
 
         let repo_str = repo_root.to_str().unwrap_or_default();
         let skills =
-            list_skills_with_options(Some(repo_str), None, tmp.path(), CompatConfig::default())
+            list_skills_with_options(Some(repo_str), None, tmp.path(), CompatConfig::all_on())
                 .await;
         let names: Vec<&str> = skills.iter().map(|s| s.name.as_str()).collect();
 
@@ -2319,7 +2320,7 @@ mod tests {
 
         let repo_str = repo_root.to_str().unwrap_or_default();
         let raw =
-            list_skills_with_options(Some(repo_str), None, tmp.path(), CompatConfig::default())
+            list_skills_with_options(Some(repo_str), None, tmp.path(), CompatConfig::all_on())
                 .await;
 
         let deploy_entries: Vec<_> = raw.iter().filter(|s| s.name == "deploy").collect();
@@ -2454,7 +2455,7 @@ mod tests {
             Some(repo_root.to_str().unwrap()),
             None,
             &home,
-            CompatConfig::default(),
+            CompatConfig::all_on(),
         )
         .await;
         let bundled: Vec<_> = skills
@@ -2483,12 +2484,12 @@ mod tests {
 
         // With all cells on, both vendor dirs are present (byte-for-byte legacy behavior)
         let all =
-            collect_skill_config_dirs(Some(cwd), None, tmp.path(), &[], CompatConfig::default());
+            collect_skill_config_dirs(Some(cwd), None, tmp.path(), &[], CompatConfig::all_on());
         assert!(ends_with(&all, ".claude"), "claude missing: {all:?}");
         assert!(ends_with(&all, ".cursor"), "cursor missing: {all:?}");
 
         // With cursor.skills off, .cursor is dropped and .claude kept
-        let mut compat = CompatConfig::default();
+        let mut compat = CompatConfig::all_on();
         compat.cursor.skills = false;
         let dirs = collect_skill_config_dirs(Some(cwd), None, tmp.path(), &[], compat);
         assert!(
@@ -2703,7 +2704,7 @@ mod tests {
         let skills = list_skills(
             Some(repo_root.to_str().unwrap()),
             &SkillsConfig::default(),
-            CompatConfig::default(),
+            CompatConfig::all_on(),
             /*project_trusted*/ true,
         )
         .await;

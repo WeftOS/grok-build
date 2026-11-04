@@ -30,7 +30,7 @@ pub(crate) fn mcp_json_resolutions(
     claude_import: ClaudeImport,
     resolver: &DefinitionResolver<'_>,
 ) -> Vec<McpServerResolution> {
-    if claude_import == ClaudeImport::Imported {
+    if !crate::compat::VENDOR_COMPAT || claude_import == ClaudeImport::Imported {
         return Vec::new();
     }
     mcp_json_files
@@ -50,7 +50,7 @@ pub fn load_mcp_json_servers_as_configs(
     mcp_json_files: &[PathBuf],
     claude_import: ClaudeImport,
 ) -> IndexMap<String, McpServerConfig> {
-    if claude_import == ClaudeImport::Imported {
+    if !crate::compat::VENDOR_COMPAT || claude_import == ClaudeImport::Imported {
         return IndexMap::new();
     }
     load_mcp_json_servers_as_configs_unfiltered(mcp_json_files)
@@ -61,6 +61,9 @@ pub fn load_mcp_json_servers_as_configs_unfiltered(
     mcp_json_files: &[PathBuf],
 ) -> IndexMap<String, McpServerConfig> {
     let mut result = IndexMap::new();
+    if !crate::compat::VENDOR_COMPAT {
+        return result;
+    }
     for mcp_path in mcp_json_files.iter().rev() {
         if let Some(config) = read_mcp_json(mcp_path) {
             for (name, cfg) in config.mcp_servers {
@@ -77,7 +80,10 @@ pub(crate) fn claude_json_resolutions(
     resolver: &DefinitionResolver<'_>,
     home: Option<&Path>,
 ) -> Vec<McpServerResolution> {
-    if !sources.compat.claude.mcps || sources.claude_import == ClaudeImport::Imported {
+    if !crate::compat::VENDOR_COMPAT
+        || !sources.compat.claude.mcps
+        || sources.claude_import == ClaudeImport::Imported
+    {
         return Vec::new();
     }
     let Some(home) = home else {
@@ -91,7 +97,7 @@ pub(crate) fn load_claude_json_mcp_servers_for_attribution(
     home: Option<&Path>,
     preferences: &McpPreferencesFile,
 ) -> Vec<acp::McpServer> {
-    let Some(home) = home else {
+    let Some(home) = home.filter(|_| crate::compat::VENDOR_COMPAT) else {
         return Vec::new();
     };
     load_claude_json_mcp_servers_from(&home.join(".claude.json"), cwd, preferences)
@@ -102,7 +108,10 @@ pub fn load_claude_json_mcp_servers_as_configs(
     compat: &CompatConfig,
     claude_import: ClaudeImport,
 ) -> IndexMap<String, McpServerConfig> {
-    if !compat.claude.mcps || claude_import == ClaudeImport::Imported {
+    if !crate::compat::VENDOR_COMPAT
+        || !compat.claude.mcps
+        || claude_import == ClaudeImport::Imported
+    {
         return IndexMap::new();
     }
     load_claude_json_mcp_servers_as_configs_unfiltered(cwd)
@@ -112,7 +121,7 @@ pub fn load_claude_json_mcp_servers_as_configs(
 pub fn load_claude_json_mcp_servers_as_configs_unfiltered(
     cwd: &Path,
 ) -> IndexMap<String, McpServerConfig> {
-    let Some(home) = xai_dirs::home_dir() else {
+    let Some(home) = xai_dirs::home_dir().filter(|_| crate::compat::VENDOR_COMPAT) else {
         return IndexMap::new();
     };
     load_claude_json_mcp_servers_from_as_configs(&home.join(".claude.json"), cwd)
@@ -261,7 +270,7 @@ pub(crate) fn cursor_resolutions(
     resolver: &DefinitionResolver<'_>,
     home: Option<&Path>,
 ) -> Vec<McpServerResolution> {
-    if !compat.cursor.mcps {
+    if !crate::compat::VENDOR_COMPAT || !compat.cursor.mcps {
         return Vec::new();
     }
     let project = cwd.join(".cursor").join("mcp.json");
@@ -287,7 +296,7 @@ pub fn load_cursor_mcp_servers_as_configs(
     cwd: &Path,
     compat: &CompatConfig,
 ) -> IndexMap<String, McpServerConfig> {
-    if !compat.cursor.mcps {
+    if !crate::compat::VENDOR_COMPAT || !compat.cursor.mcps {
         return IndexMap::new();
     }
     let mut result = IndexMap::new();

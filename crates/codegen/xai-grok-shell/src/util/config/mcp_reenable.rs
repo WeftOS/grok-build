@@ -260,7 +260,7 @@ mod tests {
     fn orphan_grok_com_name_is_not_a_definition() {
         let (_home, _hg, _gg) = isolated_home();
         let cwd = tempfile::tempdir().unwrap();
-        let compat = CompatConfig::default();
+        let compat = CompatConfig::all_on();
         let index = McpDefinitionIndex::build(&inputs(cwd.path(), &compat));
         assert!(!index.contains("grok_com_slack"));
         let disabled = HashSet::from(["grok_com_slack".into(), "totally_orphan_xyz".into()]);
@@ -280,7 +280,7 @@ command = "true"
 enabled = false
 "#,
         );
-        let compat = CompatConfig::default();
+        let compat = CompatConfig::all_on();
         let index = McpDefinitionIndex::build(&inputs(repo.path(), &compat));
         assert!(
             index.contains("reenable_disabled_local"),
@@ -308,7 +308,7 @@ command = "echo"
 args = ["ok"]
 "#,
         );
-        let mut compat = CompatConfig::default();
+        let mut compat = CompatConfig::all_on();
         compat.claude.mcps = false;
         compat.cursor.mcps = false;
         let discovered = discover_mcp_definitions_ignoring_disable(&inputs(repo.path(), &compat));
@@ -344,7 +344,7 @@ url = "https://dup.example.com/mcp"
 url = "https://dup.example.com/mcp"
 "#,
         );
-        let mut compat = CompatConfig::default();
+        let mut compat = CompatConfig::all_on();
         compat.claude.mcps = false;
         compat.cursor.mcps = false;
         let discovered = discover_mcp_definitions_ignoring_disable(&inputs(repo.path(), &compat));

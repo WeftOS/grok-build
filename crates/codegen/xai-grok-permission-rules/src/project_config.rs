@@ -17,6 +17,10 @@ pub fn mcp_json_candidate_paths(cwd: &Path) -> Vec<PathBuf> {
 
 /// [`mcp_json_candidate_paths`] over a precomputed cwd-to-git-root dir chain ([`RepoDirChain`]), repo-root-first.
 fn mcp_json_candidate_paths_in(chain_dirs: &[PathBuf]) -> Vec<PathBuf> {
+    // Tapestry: `.mcp.json` is a Claude Code file; none is a candidate unless `vendor-compat` is built in
+    if !xai_grok_config::compat::VENDOR_COMPAT {
+        return Vec::new();
+    }
     chain_dirs
         .iter()
         .rev()

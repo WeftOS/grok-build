@@ -217,7 +217,7 @@ mod tests {
             vec!["sessions"]
         );
         let session = entry(&report, "codex", "sessions");
-        assert_eq!(session.enabled, CompatConfig::default().codex.sessions);
+        assert_eq!(session.enabled, CompatConfig::all_on().codex.sessions);
         assert_eq!(session.source, CompatSource::Default);
         let json = serde_json::to_value(&report).unwrap();
         assert_eq!(

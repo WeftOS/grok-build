@@ -2,7 +2,8 @@
 //! (skills, rules, agents, MCPs, hooks, sessions).
 //!
 //! This module owns the canonical cell registry used by runtime resolution and diagnostics
-//! (env var → config TOML → remote setting → default ON).
+//! (env var → config TOML → remote setting → default ON). Tapestry: all of that is bypassed unless
+//! the `vendor-compat` feature is built in ([`VENDOR_COMPAT`]); without it every cell is OFF.
 //!
 //! Two forms:
 //! - [`CompatConfigToml`] — as parsed from the `[compat]` TOML section. Each
@@ -16,6 +17,14 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{ConfigSource, RemoteSettings, Resolved};
+
+/// Tapestry: whether this build may read Claude Code, Cursor or Codex files at all (skills, rules,
+/// agents, plugins, MCP servers, hooks, permissions, instruction files, sessions, imports).
+///
+/// This is the cargo feature `vendor-compat`, off by default and not enabled by any Tapestry
+/// binary, so it is fixed at compile time. No env var, `[compat]` TOML key or remote setting can
+/// change it. Every vendor entry point checks this one constant at its seam.
+pub const VENDOR_COMPAT: bool = cfg!(feature = "vendor-compat");
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, strum::AsRefStr, strum::IntoStaticStr)]
 #[strum(serialize_all = "snake_case")]
@@ -296,18 +305,25 @@ impl VendorCompat {
 
 impl Default for VendorCompat {
     fn default() -> Self {
+        Self::uniform(VENDOR_COMPAT)
+    }
+}
+
+impl VendorCompat {
+    const fn uniform(value: bool) -> Self {
         Self {
-            skills: true,
-            rules: true,
-            agents: true,
-            mcps: true,
-            hooks: true,
-            sessions: true,
+            skills: value,
+            rules: value,
+            agents: value,
+            mcps: value,
+            hooks: value,
+            sessions: value,
         }
     }
 }
 
 /// Bare file names, no path separators: read_file matches them against `Path::file_name()`; `agent_filenames()` prepends them to the vendor-gated `.claude/` paths.
+#[cfg(feature = "vendor-compat")]
 pub const INSTRUCTION_FILENAMES: &[&str] = &[
     "Agents.md",
     "Claude.md",
@@ -316,6 +332,10 @@ pub const INSTRUCTION_FILENAMES: &[&str] = &[
     "AGENT.md",
     "AGENTS.md",
 ];
+/// Tapestry: the Claude Code names (`CLAUDE.md`, `CLAUDE.local.md`) are not instruction files.
+/// `AGENTS.md` is the vendor-neutral convention and stays.
+#[cfg(not(feature = "vendor-compat"))]
+pub const INSTRUCTION_FILENAMES: &[&str] = &["Agents.md", "AGENT.md", "AGENTS.md"];
 
 /// The resolved hook cell of each vendor whose hooks discovery loads.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -369,6 +389,17 @@ pub struct CompatConfig {
 }
 
 impl CompatConfig {
+    /// Every cell on, whatever the build. Only discovery tests use it, to exercise the vendor
+    /// loaders directly. Production resolution never returns this unless `vendor-compat` is built in.
+    #[doc(hidden)]
+    pub const fn all_on() -> Self {
+        Self {
+            cursor: VendorCompat::uniform(true),
+            claude: VendorCompat::uniform(true),
+            codex: VendorCompat::uniform(true),
+        }
+    }
+
     pub fn value(&self, cell: CompatCell) -> bool {
         match cell.vendor() {
             CompatVendor::Cursor => self.cursor.value(cell.surface()),
@@ -505,6 +536,10 @@ fn resolve_compat_cells(
 ) -> CompatConfig {
     let defaults = CompatConfig::default();
     let mut resolved = defaults;
+    if !VENDOR_COMPAT {
+        // Tapestry: compile-time off. Env, `[compat]` TOML and remote settings are not consulted.
+        return resolved;
+    }
     for cell in COMPAT_CELLS {
         resolved.set(
             cell,

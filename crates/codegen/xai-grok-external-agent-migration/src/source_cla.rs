@@ -17,6 +17,11 @@ pub fn scan_importable_settings(
     mcp_json_files: &[PathBuf],
 ) -> ImportPlan {
     let mut plan = ImportPlan::default();
+    // Tapestry: the Claude Code import scans ~/.claude, ~/.claude.json and .mcp.json. It finds
+    // nothing unless `vendor-compat` is built in.
+    if !xai_grok_config::compat::VENDOR_COMPAT {
+        return plan;
+    }
     let home = xai_dirs::home_dir();
 
     for path in settings_paths {

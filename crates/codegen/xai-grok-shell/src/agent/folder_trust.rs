@@ -873,7 +873,7 @@ mod tests {
         assert!(!verdict, "workspace-user-only markers must trigger trust");
         let instructions = xai_grok_agent::prompt::agents_md::read_agents_config_with_paths(
             &cwd,
-            xai_grok_agent::prompt::skills::CompatConfig::default(),
+            xai_grok_agent::prompt::skills::CompatConfig::all_on(),
             &xai_grok_agent::prompt::paths::PathsConfig::default(),
             verdict,
         )
@@ -881,7 +881,7 @@ mod tests {
         let skills = xai_grok_agent::prompt::skills::list_skills(
             Some(&cwd),
             &xai_grok_agent::prompt::skills::SkillsConfig::default(),
-            xai_grok_agent::prompt::skills::CompatConfig::default(),
+            xai_grok_agent::prompt::skills::CompatConfig::all_on(),
             verdict,
         )
         .await;
@@ -901,7 +901,7 @@ mod tests {
         assert!(verdict);
         let instructions = xai_grok_agent::prompt::agents_md::read_agents_config_with_paths(
             &cwd,
-            xai_grok_agent::prompt::skills::CompatConfig::default(),
+            xai_grok_agent::prompt::skills::CompatConfig::all_on(),
             &xai_grok_agent::prompt::paths::PathsConfig::default(),
             verdict,
         )
@@ -909,7 +909,7 @@ mod tests {
         let skills = xai_grok_agent::prompt::skills::list_skills(
             Some(&cwd),
             &xai_grok_agent::prompt::skills::SkillsConfig::default(),
-            xai_grok_agent::prompt::skills::CompatConfig::default(),
+            xai_grok_agent::prompt::skills::CompatConfig::all_on(),
             verdict,
         )
         .await;
@@ -1050,7 +1050,7 @@ mod tests {
         let (reg, _errs) = crate::util::hooks::discover_hooks(
             &crate::util::hooks::process_hook_inputs(),
             git_root.as_deref(),
-            &xai_grok_tools::types::compat::CompatConfig::default(),
+            &xai_grok_tools::types::compat::CompatConfig::all_on(),
             xai_grok_hooks::trust::Trust::from_verdict(untrusted),
         );
         assert!(
@@ -1065,7 +1065,7 @@ mod tests {
         let (reg, _errs) = crate::util::hooks::discover_hooks(
             &crate::util::hooks::process_hook_inputs(),
             git_root.as_deref(),
-            &xai_grok_tools::types::compat::CompatConfig::default(),
+            &xai_grok_tools::types::compat::CompatConfig::all_on(),
             xai_grok_hooks::trust::Trust::from_verdict(trusted),
         );
         assert!(
