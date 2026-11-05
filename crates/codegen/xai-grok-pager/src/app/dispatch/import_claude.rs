@@ -5,6 +5,11 @@ use crate::app::app_view::AppView;
 ///
 /// When the scan finds nothing importable, records the dismissal and shows an info warning instead of the modal.
 pub(super) fn dispatch_import_claude(app: &mut AppView) -> Vec<Effect> {
+    // Tapestry: without `vendor-compat` there is nothing to import and no marker to write.
+    if !xai_grok_config::compat::VENDOR_COMPAT {
+        app.has_claude_import = false;
+        return vec![];
+    }
     let cwd = app.cwd.clone();
     let plan = xai_grok_shell::claude_import::scan_importable_settings(&cwd);
 

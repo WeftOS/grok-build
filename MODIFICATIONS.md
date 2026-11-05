@@ -46,6 +46,9 @@ Add each path in backticks on a list line, in the form
 - `crates/codegen/xai-grok-external-agent-migration/src/source_cla.rs` (modified): R17: the Claude import scan returns an empty plan unless `VENDOR_COMPAT`.
 - `crates/codegen/xai-grok-hooks/Cargo.toml` (modified): R17: new feature `vendor-compat` forwarding to `xai-grok-config/vendor-compat` (off by default).
 - `crates/codegen/xai-grok-hooks/src/discovery.rs` (modified): R17: Claude and Cursor hook files are sources only when `VENDOR_COMPAT`; vendor test gated, isolation test added.
+- `crates/codegen/xai-grok-pager/docs/user-guide/04-slash-commands.md` (modified): R17d: notes that `/import-claude` exists only in a `vendor-compat` build.
+- `crates/codegen/xai-grok-pager/src/app/dispatch/import_claude.rs` (modified): R17d: the import action does nothing and writes no marker unless `VENDOR_COMPAT`.
+- `crates/codegen/xai-grok-pager/src/slash/commands/mod.rs` (modified): R17d: `/import-claude` is registered only when `VENDOR_COMPAT`; test added.
 - `crates/codegen/xai-grok-pager/src/app/effects/mod.rs` (modified): R17: tests that build vendor-enabled configs use `CompatConfig::all_on()` instead of `default()` (now off); tests asserting vendor discovery gated on feature `vendor-compat`.
 - `crates/codegen/xai-grok-permission-rules/Cargo.toml` (modified): R17: new feature `vendor-compat` forwarding to `xai-grok-config/vendor-compat` (off by default).
 - `crates/codegen/xai-grok-permission-rules/src/claude_settings.rs` (modified): R17: no `.claude/settings*.json` path is discovered unless `VENDOR_COMPAT`.

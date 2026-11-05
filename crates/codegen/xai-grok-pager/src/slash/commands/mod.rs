@@ -75,7 +75,7 @@ use std::sync::Arc;
 ///
 /// This is the single source of truth for the builtin command set. The registry is constructed from this list.
 pub fn builtin_commands() -> Vec<Arc<dyn SlashCommand>> {
-    vec![
+    let mut commands: Vec<Arc<dyn SlashCommand>> = vec![
         // The rows the dropdown shows before it scrolls.
         Arc::new(tutorial::TutorialCommand),
         Arc::new(settings_cmd::SettingsCommand),
@@ -161,7 +161,12 @@ pub fn builtin_commands() -> Vec<Arc<dyn SlashCommand>> {
         Arc::new(gboom::GboomCommand),
         // Debug toggles: always registered, listed only on debug binaries.
         Arc::new(debug::DebugCommand),
-    ]
+    ];
+    // Tapestry: `/import-claude` only exists when Claude discovery is built in (`vendor-compat`).
+    if !xai_grok_config::compat::VENDOR_COMPAT {
+        commands.retain(|c| c.name() != "import-claude");
+    }
+    commands
 }
 #[cfg(test)]
 mod tests {
@@ -262,6 +267,14 @@ mod tests {
         assert!(reg.get("show-plan").is_some());
         assert!(reg.get("plan-view").is_some());
         assert!(reg.get("undo").is_some());
+    }
+    #[test]
+    fn import_claude_is_registered_only_with_vendor_compat() {
+        let reg = CommandRegistry::new(builtin_commands());
+        assert_eq!(
+            reg.get("import-claude").is_some(),
+            xai_grok_config::compat::VENDOR_COMPAT
+        );
     }
     #[test]
     fn aliases_resolve_to_same_command() {

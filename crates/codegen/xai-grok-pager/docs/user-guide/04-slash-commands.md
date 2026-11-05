@@ -396,6 +396,8 @@ Aliases: `/tour`, `/onboarding`
 
 Open the Claude import modal to bring over `~/.claude` settings: permissions, environment variables, MCP servers, hooks, and paths.
 
+Tapestry builds without Claude discovery, so this command exists only in a build with the `vendor-compat` feature.
+
 ---
 
 ## Agents and Personas
