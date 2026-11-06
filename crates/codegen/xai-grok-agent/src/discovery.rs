@@ -770,7 +770,11 @@ mod tests {
         assert!(paths.contains(&grok.join("agents")));
         assert!(paths.contains(&grok.join("bundled").join("agents")));
         assert!(paths.iter().all(|p| !p.starts_with(home.join(".grok"))));
-        assert!(paths.iter().all(|p| !p.to_string_lossy().contains(".claude")));
+        assert!(
+            paths
+                .iter()
+                .all(|p| !p.to_string_lossy().contains(".claude"))
+        );
         assert_eq!(PROJECT_AGENT_SUBDIRS, &[".grok/agents"]);
     }
 

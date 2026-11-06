@@ -3041,7 +3041,11 @@ fn vendor_settings_and_mcp_json_are_never_discovered() {
         )
         .unwrap();
     }
-    std::fs::write(cwd.join(".mcp.json"), r#"{"mcpServers": {"v": {"command": "v"}}}"#).unwrap();
+    std::fs::write(
+        cwd.join(".mcp.json"),
+        r#"{"mcpServers": {"v": {"command": "v"}}}"#,
+    )
+    .unwrap();
 
     assert!(find_claude_settings_paths(cwd).is_empty());
     assert!(!has_claude_compat(cwd));

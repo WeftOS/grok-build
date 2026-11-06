@@ -76,8 +76,14 @@ fn claude_installed_plugins_are_not_discovered() {
     let trust = TrustStore::load_from(tmp.path().join("trust"));
     let found = discover_plugins(Some(&project), &DiscoveryConfig::default(), &trust, true);
     let names: Vec<&str> = found.iter().map(|p| p.manifest.name.as_str()).collect();
-    assert!(!names.contains(&"vendor-plug"), "claude plugin leaked: {names:?}");
-    assert!(names.contains(&"native-plug"), "native plugin missing: {names:?}");
+    assert!(
+        !names.contains(&"vendor-plug"),
+        "claude plugin leaked: {names:?}"
+    );
+    assert!(
+        names.contains(&"native-plug"),
+        "native plugin missing: {names:?}"
+    );
 }
 
 #[tokio::test]
@@ -91,7 +97,10 @@ async fn agents_dirs_are_not_read_but_grok_dirs_are() {
     git2::Repository::init(&project).unwrap();
 
     write_skill(&home.join(".agents/skills/home-agents-x"), "home-agents-x");
-    write_skill(&project.join(".agents/skills/proj-agents-y"), "proj-agents-y");
+    write_skill(
+        &project.join(".agents/skills/proj-agents-y"),
+        "proj-agents-y",
+    );
     write_skill(&grok_home.join("skills/grok-home-z"), "grok-home-z");
     write_skill(&project.join(".grok/skills/proj-grok-w"), "proj-grok-w");
 
@@ -106,9 +115,18 @@ async fn agents_dirs_are_not_read_but_grok_dirs_are() {
     )
     .await;
     let names: Vec<&str> = skills.iter().map(|s| s.name.as_str()).collect();
-    assert!(!names.contains(&"home-agents-x"), "~/.agents leaked: {names:?}");
-    assert!(!names.contains(&"proj-agents-y"), ".agents leaked: {names:?}");
-    assert!(names.contains(&"proj-grok-w"), "project .grok skill missing: {names:?}");
+    assert!(
+        !names.contains(&"home-agents-x"),
+        "~/.agents leaked: {names:?}"
+    );
+    assert!(
+        !names.contains(&"proj-agents-y"),
+        ".agents leaked: {names:?}"
+    );
+    assert!(
+        names.contains(&"proj-grok-w"),
+        "project .grok skill missing: {names:?}"
+    );
 
     let dirs = collect_skill_config_dirs(
         Some(&project),
@@ -120,7 +138,8 @@ async fn agents_dirs_are_not_read_but_grok_dirs_are() {
     assert!(dirs.contains(&grok_home), "grok home dir missing: {dirs:?}");
     assert!(dirs.contains(&project.join(".grok")), "{dirs:?}");
     assert!(
-        dirs.iter().all(|d| d.file_name() != Some(OsStr::new(".agents"))),
+        dirs.iter()
+            .all(|d| d.file_name() != Some(OsStr::new(".agents"))),
         ".agents dir listed: {dirs:?}"
     );
 }
