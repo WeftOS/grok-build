@@ -1,5 +1,6 @@
 use super::*;
 
+#[cfg(feature = "vendor-compat")]
 fn env_with(set: &[(&str, bool)]) -> CompatEnv {
     CompatEnv::read(|name| {
         set.iter()
@@ -7,11 +8,13 @@ fn env_with(set: &[(&str, bool)]) -> CompatEnv {
     })
 }
 
+#[cfg(feature = "vendor-compat")]
 fn parse_compat(source: &str) -> CompatConfigToml {
     let config: toml::Value = toml::from_str(source).unwrap();
     config.get("compat").unwrap().clone().try_into().unwrap()
 }
 
+#[cfg(feature = "vendor-compat")]
 fn assert_session_one_disabled(config: CompatConfig, expected: CompatVendor) {
     for cell in COMPAT_CELLS {
         if cell.surface() == CompatSurface::Sessions {

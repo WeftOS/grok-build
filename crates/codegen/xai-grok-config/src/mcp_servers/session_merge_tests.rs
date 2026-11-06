@@ -6,10 +6,11 @@ use super::{
     SessionMcpServer, SessionMcpTier, canonicalize_mcp_maps, mcp_server_definitions_equal,
 };
 use crate::compat::CompatConfig;
+#[cfg(feature = "vendor-compat")]
+use crate::mcp_servers::admit_client_mcp_servers_at;
 use crate::mcp_servers::server_list::UserMcpConfig;
 use crate::mcp_servers::{
-    McpServerOrigin, McpServerScope, McpServerSources, PluginMcpServers,
-    admit_client_mcp_servers_at, mcp_server_name,
+    McpServerOrigin, McpServerScope, McpServerSources, PluginMcpServers, mcp_server_name,
 };
 use crate::{ClaudeImport, McpPreferencesFile};
 
@@ -302,6 +303,7 @@ fn stdio(name: &str, command: &str, args: &[&str]) -> acp::McpServer {
     )
 }
 
+#[cfg(feature = "vendor-compat")]
 fn http(name: &str, url: &str) -> acp::McpServer {
     acp::McpServer::Http(acp::McpServerHttp::new(name, url))
 }
@@ -342,6 +344,7 @@ fn server_named<'a>(list: &'a [SessionMcpServer], name: &str) -> &'a SessionMcpS
         .unwrap_or_else(|| panic!("{name} missing"))
 }
 
+#[cfg(feature = "vendor-compat")]
 fn server_names_among<'a>(list: &'a [SessionMcpServer], kept: &[&str]) -> Vec<&'a str> {
     list.iter()
         .map(|server| mcp_server_name(&server.server))

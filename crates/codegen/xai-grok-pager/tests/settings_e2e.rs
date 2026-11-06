@@ -1751,7 +1751,7 @@ fn render_with_filter_active_and_small_viewport_clamps_scroll() {
     );
     let visible = s.filtered_indices().len();
     assert!(
-        s.scroll_offset <= visible.saturating_sub(1).max(0),
+        s.scroll_offset <= visible.saturating_sub(1),
         "scroll_offset ({}) must be within filtered_indices bounds ({})",
         s.scroll_offset,
         visible

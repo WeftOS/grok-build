@@ -55,8 +55,7 @@ pub fn render_menu(
     .areas(area);
 
     let mut rects = Vec::with_capacity(items.len());
-    let mut y = menu_centered.y;
-    for (i, (key, label)) in items.iter().enumerate() {
+    for (y, (i, (key, label))) in (menu_centered.y..).zip(items.iter().enumerate()) {
         if y >= menu_centered.y + menu_centered.height {
             break;
         }
@@ -151,8 +150,6 @@ pub fn render_menu(
         if is_selected && theme.is_bandless() {
             buf.set_style(row_rect, Style::default().add_modifier(Modifier::REVERSED));
         }
-
-        y += 1;
     }
 
     rects

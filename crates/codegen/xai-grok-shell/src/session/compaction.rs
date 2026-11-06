@@ -751,14 +751,11 @@ impl SessionActor {
             xai_grok_compaction::sampler::SAMPLER_START_FAILED_PREFIX,
         ];
         let mut rest = raw.trim();
-        loop {
-            let Some(prefix) = INTERNAL_PREFIXES.iter().find(|p| {
-                rest.as_bytes()
-                    .get(..p.len())
-                    .is_some_and(|head| head.eq_ignore_ascii_case(p.as_bytes()))
-            }) else {
-                break;
-            };
+        while let Some(prefix) = INTERNAL_PREFIXES.iter().find(|p| {
+            rest.as_bytes()
+                .get(..p.len())
+                .is_some_and(|head| head.eq_ignore_ascii_case(p.as_bytes()))
+        }) {
             let Some(stripped) = rest.get(prefix.len()..) else {
                 break;
             };

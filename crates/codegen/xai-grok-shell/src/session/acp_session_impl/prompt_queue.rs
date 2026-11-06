@@ -688,14 +688,11 @@ impl SessionActor {
             .and_then(|meta| meta.owner.as_deref())
             .map(str::to_string);
         let mut promoted = Vec::new();
-        loop {
-            // Hidden runtime wakes may be skipped, but a visible protected row stops the prefix rather than being skipped over
-            let Some(pos) = state.pending_inputs.iter().position(|item| {
-                Some(item.prompt_id.as_str()) != running_front_id.as_deref()
-                    && (item.is_queue_visible() || !item.input_origin.is_synthetic())
-            }) else {
-                break;
-            };
+        // Hidden runtime wakes may be skipped, but a visible protected row stops the prefix rather than being skipped over
+        while let Some(pos) = state.pending_inputs.iter().position(|item| {
+            Some(item.prompt_id.as_str()) != running_front_id.as_deref()
+                && (item.is_queue_visible() || !item.input_origin.is_synthetic())
+        }) {
             let Some(item) = state.pending_inputs.get(pos) else {
                 break;
             };

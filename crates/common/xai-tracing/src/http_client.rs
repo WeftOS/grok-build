@@ -102,6 +102,8 @@ mod tests {
             .mount(&server)
             .await;
 
+        // Loopback wiremock server only; the grok TLS policy does not apply.
+        #[allow(clippy::disallowed_methods)]
         let client = traced_client(reqwest::Client::new());
         let parent = tracing::info_span!("parent_handler");
         let parent_span_id = otel_span_id_hex(&parent);

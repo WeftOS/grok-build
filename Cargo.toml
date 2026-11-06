@@ -473,6 +473,11 @@ doc_overindented_list_items = "allow"
 needless_lifetimes = "allow"
 single_range_in_vec_init = "allow"
 too_many_arguments = "allow"
+# Rust 1.95 widened collapsible_match to fold an inner `if` into the arm guard. That
+# changes behaviour whenever a later arm can match the same pattern (the value falls
+# through instead of being consumed) or the condition has side effects, so the fork
+# keeps the nested form. Tapestry fork change; see MODIFICATIONS.md.
+collapsible_match = "allow"
 
 # Allow uninlined_format_args lint to prevent main from breaking after merges
 # When older branches (created before this lint was added to CI) get merged,

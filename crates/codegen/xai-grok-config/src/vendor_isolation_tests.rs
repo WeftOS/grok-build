@@ -8,7 +8,7 @@ use std::fs;
 use std::path::Path;
 
 use crate::compat::{
-    CompatConfig, CompatConfigToml, CompatEnv, COMPAT_CELLS, INSTRUCTION_FILENAMES, VENDOR_COMPAT,
+    COMPAT_CELLS, CompatConfig, CompatConfigToml, CompatEnv, INSTRUCTION_FILENAMES, VENDOR_COMPAT,
     resolve_compat_config, resolve_compat_hooks, resolve_compat_sessions,
 };
 use crate::mcp_servers::server_list::DefinitionResolver;
@@ -27,7 +27,10 @@ fn populated() -> (tempfile::TempDir, std::path::PathBuf, std::path::PathBuf) {
     let tmp = tempfile::tempdir().unwrap();
     let home = tmp.path().join("home");
     let project = tmp.path().join("project");
-    write(&home.join(".claude/skills/x/SKILL.md"), "---\nname: x\n---\nbody");
+    write(
+        &home.join(".claude/skills/x/SKILL.md"),
+        "---\nname: x\n---\nbody",
+    );
     write(&home.join(".claude/agents/a.md"), "---\nname: a\n---\nbody");
     write(&home.join(".claude/rules/r.md"), "rule");
     write(
@@ -42,10 +45,22 @@ fn populated() -> (tempfile::TempDir, std::path::PathBuf, std::path::PathBuf) {
         ),
     );
     write(&home.join(".cursor/mcp.json"), MCP_ENTRY);
-    write(&project.join(".claude/skills/y/SKILL.md"), "---\nname: y\n---\nbody");
-    write(&project.join(".claude/agents/b.md"), "---\nname: b\n---\nbody");
-    write(&project.join(".claude/settings.json"), r#"{"permissions": {"deny": ["Bash(rm:*)"]}}"#);
-    write(&project.join(".claude/CLAUDE.md"), "claude project instructions");
+    write(
+        &project.join(".claude/skills/y/SKILL.md"),
+        "---\nname: y\n---\nbody",
+    );
+    write(
+        &project.join(".claude/agents/b.md"),
+        "---\nname: b\n---\nbody",
+    );
+    write(
+        &project.join(".claude/settings.json"),
+        r#"{"permissions": {"deny": ["Bash(rm:*)"]}}"#,
+    );
+    write(
+        &project.join(".claude/CLAUDE.md"),
+        "claude project instructions",
+    );
     write(&project.join(".cursor/mcp.json"), MCP_ENTRY);
     write(&project.join(".mcp.json"), MCP_ENTRY);
     write(&project.join("CLAUDE.md"), "claude instructions");
@@ -94,7 +109,7 @@ fn every_source_on() -> (CompatConfigToml, CompatEnv, RemoteSettings) {
 
 #[test]
 fn the_build_has_vendor_compat_off() {
-    assert!(!VENDOR_COMPAT);
+    const { assert!(!VENDOR_COMPAT) };
 }
 
 #[test]
@@ -125,7 +140,11 @@ fn resolved_cells_expose_no_vendor_directory_or_instruction_name() {
     let (toml, env, remote) = every_source_on();
     let resolved = resolve_compat_config(&toml, &env, Some(&remote));
     assert_eq!(resolved.skill_config_dirs(), vec![".grok"]);
-    assert!(!CompatConfig::all_on().skill_config_dirs().contains(&".agents"));
+    assert!(
+        !CompatConfig::all_on()
+            .skill_config_dirs()
+            .contains(&".agents")
+    );
     assert_eq!(resolved.rules_dirs(), vec![".grok/rules"]);
     assert!(resolved.agents_home_dirs().is_empty());
     let names = resolved.agent_filenames();

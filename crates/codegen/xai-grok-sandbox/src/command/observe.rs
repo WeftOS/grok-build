@@ -109,7 +109,8 @@ impl ObserveSummary {
                 last_at: now,
             });
         }
-        self.would_block.sort_by(|a, b| b.last_at.cmp(&a.last_at));
+        self.would_block
+            .sort_by_key(|b| std::cmp::Reverse(b.last_at));
     }
 
     fn evict_oldest(&mut self) {

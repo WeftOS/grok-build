@@ -24,7 +24,7 @@ Add each path in backticks on a list line, in the form
 - `docs/tapestry/notices-inventory.md` (added): inventory of licence and notice files.
 - `docs/tapestry/mpl-files.md` (added): inventory of MPL-2.0 files and dependencies.
 - `rust-toolchain.toml` (modified): channel 1.94.0 to 1.95, to match WeftOS. `cargo check -p xai-grok-pager-bin` passes unchanged on 1.95 (x86_64 Linux and aarch64 macOS).
-- `Cargo.toml` (modified): the two pinned git dependencies now come from WeftOS mirrors at the same revisions: async-openai from `WeftOS/async-openai` (was `our-forks/async-openai`) and nucleo from `WeftOS/nucleo` (was `helix-editor/nucleo`).
+- `Cargo.toml` (modified): the two pinned git dependencies now come from WeftOS mirrors at the same revisions: async-openai from `WeftOS/async-openai` (was `our-forks/async-openai`) and nucleo from `WeftOS/nucleo` (was `helix-editor/nucleo`). clippy: workspace lint `collapsible_match` set to allow, because the Rust 1.95 rewrite moves the inner `if` into the arm guard and lets values fall through to later arms.
 - `Cargo.lock` (modified): the matching source URLs for those two git dependencies; no version or revision changed.
 
 - `crates/codegen/xai-grok-agent/Cargo.toml` (modified): R17: new feature `vendor-compat` forwarding to `xai-grok-config/vendor-compat` (off by default).
@@ -36,12 +36,12 @@ Add each path in backticks on a list line, in the form
 
 - `crates/codegen/xai-grok-config/Cargo.toml` (modified): R17: new feature `vendor-compat` (off by default).
 - `crates/codegen/xai-grok-config/src/compat.rs` (modified): R17b: `skill_config_dirs()` lists `.agents` only with `VENDOR_COMPAT`. R17: new `VENDOR_COMPAT` const (cargo feature `vendor-compat`, off by default); every vendor cell defaults off and `resolve_compat_cells` ignores env, `[compat]` TOML and remote settings when it is off; `CLAUDE.md`/`CLAUDE.local.md` dropped from `INSTRUCTION_FILENAMES`; test helper `CompatConfig::all_on()`.
-- `crates/codegen/xai-grok-config/src/compat_tests.rs` (modified): R17: tests that build vendor-enabled configs use `CompatConfig::all_on()` instead of `default()` (now off); tests asserting vendor discovery gated on feature `vendor-compat`.
+- `crates/codegen/xai-grok-config/src/compat_tests.rs` (modified): R17: tests that build vendor-enabled configs use `CompatConfig::all_on()` instead of `default()` (now off); tests asserting vendor discovery gated on feature `vendor-compat`. clippy: Rust 1.95 lints (mechanical).
 - `crates/codegen/xai-grok-config/src/mcp_servers.rs` (modified): R17: vendor block-key attribution reads no vendor file unless `VENDOR_COMPAT`; registers the isolation test.
 - `crates/codegen/xai-grok-config/src/mcp_servers/json_config.rs` (modified): R17: `.mcp.json`, `~/.claude.json` and Cursor MCP loaders return nothing unless `VENDOR_COMPAT`.
 - `crates/codegen/xai-grok-config/src/mcp_servers/json_config_tests.rs` (modified): R17: tests that build vendor-enabled configs use `CompatConfig::all_on()` instead of `default()` (now off); tests asserting vendor discovery gated on feature `vendor-compat`.
-- `crates/codegen/xai-grok-config/src/mcp_servers/server_list_tests.rs` (modified): R17: tests that build vendor-enabled configs use `CompatConfig::all_on()` instead of `default()` (now off); tests asserting vendor discovery gated on feature `vendor-compat`.
-- `crates/codegen/xai-grok-config/src/mcp_servers/session_merge_tests.rs` (modified): R17: tests that build vendor-enabled configs use `CompatConfig::all_on()` instead of `default()` (now off); tests asserting vendor discovery gated on feature `vendor-compat`.
+- `crates/codegen/xai-grok-config/src/mcp_servers/server_list_tests.rs` (modified): R17: tests that build vendor-enabled configs use `CompatConfig::all_on()` instead of `default()` (now off); tests asserting vendor discovery gated on feature `vendor-compat`. clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-config/src/mcp_servers/session_merge_tests.rs` (modified): R17: tests that build vendor-enabled configs use `CompatConfig::all_on()` instead of `default()` (now off); tests asserting vendor discovery gated on feature `vendor-compat`. clippy: Rust 1.95 lints (mechanical).
 - `crates/codegen/xai-grok-config/src/mcp_servers_tests.rs` (modified): R17: tests that build vendor-enabled configs use `CompatConfig::all_on()` instead of `default()` (now off); tests asserting vendor discovery gated on feature `vendor-compat`.
 - `crates/codegen/xai-grok-external-agent-migration/src/source_cla.rs` (modified): R17: the Claude import scan returns an empty plan unless `VENDOR_COMPAT`.
 - `crates/codegen/xai-grok-hooks/Cargo.toml` (modified): R17: new feature `vendor-compat` forwarding to `xai-grok-config/vendor-compat` (off by default).
@@ -67,11 +67,43 @@ Add each path in backticks on a list line, in the form
 - `crates/codegen/xai-grok-shell/src/util/config/mcp_reenable.rs` (modified): R17: tests that build vendor-enabled configs use `CompatConfig::all_on()` instead of `default()` (now off); tests asserting vendor discovery gated on feature `vendor-compat`.
 - `crates/codegen/xai-grok-subagent-resolution/src/definition.rs` (modified): R17: tests that build vendor-enabled configs use `CompatConfig::all_on()` instead of `default()` (now off); tests asserting vendor discovery gated on feature `vendor-compat`.
 - `crates/codegen/xai-grok-tools/Cargo.toml` (modified): R17: new feature `vendor-compat` forwarding to `xai-grok-config/vendor-compat` (off by default).
-- `crates/codegen/xai-grok-tools/src/implementations/grok_build/read_file/mod.rs` (modified): R17: tests that build vendor-enabled configs use `CompatConfig::all_on()` instead of `default()` (now off); tests asserting vendor discovery gated on feature `vendor-compat`.
+- `crates/codegen/xai-grok-tools/src/implementations/grok_build/read_file/mod.rs` (modified): R17: tests that build vendor-enabled configs use `CompatConfig::all_on()` instead of `default()` (now off); tests asserting vendor discovery gated on feature `vendor-compat`. clippy: Rust 1.95 lints (mechanical).
 - `crates/codegen/xai-grok-tools/src/implementations/skills/discovery.rs` (modified): R17b: dynamic skill discovery does not scan `.agents` unless `VENDOR_COMPAT`. R17: tests that build vendor-enabled configs use `CompatConfig::all_on()` instead of `default()` (now off); tests asserting vendor discovery gated on feature `vendor-compat`.
-- `crates/codegen/xai-grok-tools/src/types/agents_md_tracker.rs` (modified): R17: tests that build vendor-enabled configs use `CompatConfig::all_on()` instead of `default()` (now off); tests asserting vendor discovery gated on feature `vendor-compat`.
+- `crates/codegen/xai-grok-tools/src/types/agents_md_tracker.rs` (modified): R17: tests that build vendor-enabled configs use `CompatConfig::all_on()` instead of `default()` (now off); tests asserting vendor discovery gated on feature `vendor-compat`. clippy: Rust 1.95 lints (mechanical).
 - `crates/codegen/xai-grok-agent/src/lib.rs` (modified): R17b: registers the test module `vendor_isolation_tests`.
 - `crates/codegen/xai-grok-agent/src/vendor_isolation_tests.rs` (added): R17b: tests that `~/.claude` installed plugins and `~/.agents` / project `.agents` skills load nothing while `GROK_HOME` and project `.grok` still load.
 - `crates/codegen/xai-grok-tools/src/reminders/skill_discovery.rs` (modified): R17b: `SKILL_CONFIG_DIRS` is only `.grok` unless feature `vendor-compat`.
 - `crates/codegen/xai-grok-shell/src/extensions/skills.rs` (modified): R17b: skill source listing omits `.agents` and `.claude` dirs unless `VENDOR_COMPAT`.
-- `crates/codegen/xai-grok-config/src/vendor_isolation_tests.rs` (added): R17: new tests that a populated HOME and project yield nothing from Claude/Cursor files, even with env, TOML and remote forced on.
+- `crates/codegen/xai-grok-config/src/vendor_isolation_tests.rs` (added): R17: new tests that a populated HOME and project yield nothing from Claude/Cursor files, even with env, TOML and remote forced on. clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-agent/src/prompt/user_message.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-markdown/src/parse.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-pager-pty-harness/benches/paste_latency.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-pager-pty-harness/benches/pty_bench.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-pager/src/app/dispatch/rewind.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-pager/src/app/session_startup.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-pager/src/recent_dirs.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-pager/src/scrollback/render.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-pager/src/scrollback/text_selection.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-pager/src/slash/mru.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-pager/src/tool_usage.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-pager/src/views/dashboard/state.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-pager/src/views/history_search.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-pager/src/views/settings_modal/state.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-pager/src/views/welcome/menu.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-pager/tests/settings_e2e.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-sandbox/src/command/observe.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-shell-base/src/util/subprocess.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-shell/src/agent/roster.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-shell/src/extensions/prompt_history.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-shell/src/extensions/suggest/history_provider.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-shell/src/extensions/suggest/mod.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-shell/src/session/acp_session_impl/prompt_offload_tests.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-shell/src/session/acp_session_impl/prompt_queue.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-shell/src/session/acp_session_tests/tool_layer_images_bridge_tests.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-shell/src/session/compaction.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-shell/src/session/storage/jsonl/mod.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-shell/src/session/unified_list/mod.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-tools/src/implementations/read_file/metadata.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-tty-utils/src/lib.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-tty-utils/src/runtime_tests.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/common/xai-tracing/src/http_client.rs` (modified): clippy: Rust 1.95 lints (mechanical).

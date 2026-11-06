@@ -3,7 +3,9 @@ use std::path::Path;
 
 use super::*;
 use crate::ClaudeImport;
-use crate::compat::{CompatConfig, CompatVendor};
+use crate::compat::CompatConfig;
+#[cfg(feature = "vendor-compat")]
+use crate::compat::CompatVendor;
 use crate::mcp_servers::{McpServerOAuth, McpServerScope, PluginMcpServers};
 
 #[test]

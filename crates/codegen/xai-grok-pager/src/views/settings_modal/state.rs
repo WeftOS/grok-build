@@ -492,10 +492,7 @@ impl SettingsModalState {
             // Defensive: resume from bottom if `selected` is hidden.
             None => self.filtered_cache.len() - 1,
         };
-        loop {
-            let Some(&row_idx) = self.filtered_cache.get(prev) else {
-                break;
-            };
+        while let Some(&row_idx) = self.filtered_cache.get(prev) {
             if self
                 .rows
                 .get(row_idx)

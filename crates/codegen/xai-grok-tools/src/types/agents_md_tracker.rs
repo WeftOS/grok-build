@@ -16,7 +16,7 @@ use crate::types::compat::CompatConfig;
 /// Filenames (and relative paths) recognized as project instruction files. The runtime list is produced by
 /// `CompatConfig::agent_filenames()`; this constant is retained only as the all-on reference that the pinning test
 /// `compat_default_matches_legacy_constants` asserts parity against.
-#[cfg(test)]
+#[cfg(all(test, feature = "vendor-compat"))]
 pub(crate) const AGENT_FILENAMES: &[&str] = &[
     "Agents.md",
     "Claude.md",
@@ -31,7 +31,7 @@ pub(crate) const AGENT_FILENAMES: &[&str] = &[
 /// Subdirectories to scan for `*.md` rules files. The runtime list is produced by
 /// `CompatConfig::rules_dirs()`; this constant is retained only as the all-on reference for the
 /// pinning test.
-#[cfg(test)]
+#[cfg(all(test, feature = "vendor-compat"))]
 pub(crate) const RULES_DIRS: &[&str] = &[".grok/rules", ".claude/rules", ".cursor/rules"];
 
 /// Maximum number of parent directories to walk upward per call. In very deep repos, this prevents doing many stat calls on a single tool

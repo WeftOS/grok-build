@@ -331,7 +331,7 @@ impl JsonlStorageAdapter {
                 candidates.push((summary_path, mtime));
             }
         }
-        candidates.sort_unstable_by(|a, b| b.1.cmp(&a.1));
+        candidates.sort_unstable_by_key(|b| std::cmp::Reverse(b.1));
         let max_reads = limit
             .saturating_mul(Self::RECENT_LIST_READ_SLACK)
             .max(limit);
