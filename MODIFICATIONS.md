@@ -107,3 +107,5 @@ Add each path in backticks on a list line, in the form
 - `crates/codegen/xai-tty-utils/src/lib.rs` (modified): clippy: Rust 1.95 lints (mechanical).
 - `crates/codegen/xai-tty-utils/src/runtime_tests.rs` (modified): clippy: Rust 1.95 lints (mechanical).
 - `crates/common/xai-tracing/src/http_client.rs` (modified): clippy: Rust 1.95 lints (mechanical).
+- `crates/codegen/xai-grok-pager/docs/internal/25-enterprise.md` (added): Tapestry placeholder for the unpublished upstream enterprise pinning table; fill in when deploying into a managed environment.
+- `crates/codegen/xai-grok-pager/docs/internal/22-environment-variables.md` (added): Tapestry placeholder for the unpublished upstream environment-variable table; fill in when deploying into an environment.
